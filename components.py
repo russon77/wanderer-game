@@ -122,3 +122,55 @@ class TimeToLiveComponent(Component):
 
     def is_alive(self):
         return self.ttl <= 0.0
+
+
+class SpriteComponent(Component):
+    name = 'SpriteComponent'
+
+    def __init__(self, sprite):
+        Component.__init__(self)
+        self.sprite = sprite
+
+    def get_image(self):
+        return self.sprite
+
+
+class AnimatedSpriteComponent(SpriteComponent):
+    name = 'AnimatedSpriteComponent'
+
+    def __init__(self, sprites, initial_state, time_between_frames):
+        Component.__init__(self)
+        # sprites is a dictionary indexed by state and state_index to retrieve an image
+        self.sprites = sprites
+        self.states = list(sprites.keys())
+
+        self.state = initial_state
+        self.state_index = 0
+
+        self.next_state = initial_state
+
+        self.timer = 0.0
+        self.time_between_frames = time_between_frames
+
+    def set_state(self, new_state, repeated=True):
+        if new_state in self.states:
+            if repeated:
+                self.next_state = new_state
+
+            self.state_index = 0
+            self.state = new_state
+
+    def get_image(self, delta_time=0):
+        # advance timer
+        self.timer += delta_time
+        if self.timer >= self.time_between_frames:
+            self.timer = 0
+
+            # now advance the frame
+            self.state_index += 1
+            if self.state_index >= len(self.sprites[self.state]):
+                self.state = self.next_state
+                self.state_index = 0
+
+        return self.sprites[self.state][self.state_index]
+

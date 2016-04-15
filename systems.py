@@ -45,7 +45,7 @@ def input_system(entities, delta_time=0):
     an input component has a list of keys and their change (True for pressed down, or False or released)
 
     since the input component is cleared after each run through, this can also be used just as effectively with one-off
-     inputs like cast-spell or something
+     inputs like cast-spell or attack
     """
     for entity in relevant_entities(entities, [InputComponent.name]):
         comp = entity.components[InputComponent.name]
@@ -93,6 +93,15 @@ def input_system(entities, delta_time=0):
                                         BoundsComponent(attack_bounds),
                                         DamageComponent(attack.damage),
                                         TimeToLiveComponent(1.5)]))  # todo change magic number to constant
+
+                animation = entity.components.get(AnimatedSpriteComponent.name)
+                if animation is not None:
+                    # fixme this is tightly coupled with some magic, think of a different way?
+                    # for now states will be enumerated in constants
+                    key = STATE_ATTACKING
+                    animation.set_state('attacking', False)
+                    print("switched animation")
+
                 print("Player attacked!")
 
         # after processing, remove all keys
@@ -112,15 +121,37 @@ def aging_system(entities, delta_time=0):
 mss_rate = 3
 
 
-def monster_spawn_system(entities, global_timer=0):
+def monster_spawn_system(entities, delta_time=0, global_timer=1):
     if global_timer % mss_rate == 0:
         # spawn a monster!
         entities.append(
             [
                 PositionComponent(),
                 MovementComponent(),
-                DamageComponent(1),
-
+                DamageComponent(1)
             ]
         )
 
+        print("Spawned a monster!")
+
+
+def graphics_system(entities, output=None, delta_time=0):
+    # can't do anything if we don't have a screen to draw to!
+    if output is None:
+        return
+
+    # todo combine both static and dynamic through use of their shared "get_image()" interface
+
+    # process animated entities
+    for entity in relevant_entities(entities, [AnimatedSpriteComponent.name, PositionComponent.name]):
+        img = entity.components[AnimatedSpriteComponent.name].get_image(delta_time)
+        pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
+
+        output.blit(img, pos)
+
+    # todo process static entries
+    for entity in relevant_entities(entities, [SpriteComponent.name, PositionComponent.name]):
+        img = entity.components[SpriteComponent.name].get_image()
+        pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
+
+        output.blit(img, pos)
