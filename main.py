@@ -33,7 +33,8 @@ for i in range(0, 4):
     sprite_list.append(surf)
 
 sprites = {
-    'running': sprite_list
+    'running': sprite_list,
+    'backwards': list(reversed(sprite_list))
 }
 
 player_input = InputComponent()
@@ -44,7 +45,7 @@ player = Entity([player_pos,
                  BoundsComponent(ball_rect),
                  AttackComponent(),
                  DirectionComponent(),
-                 AnimatedSpriteComponent(sprites, 'running')])
+                 AnimatedSpriteComponent(sprites, 'running', 200)])
 
 entities = [player]
 systems = [movement_system, input_system, aging_system, graphics_system]
@@ -67,7 +68,7 @@ while True:
     for system in systems:
         system(entities, delta_time=delta)
 
-    graphics_system(entities, output=screen)
+    graphics_system(entities, output=screen, delta_time=delta)
 
     # screen.blit(ball, (player_pos.posx, player_pos.posy))
     pygame.display.flip()

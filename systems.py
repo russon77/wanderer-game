@@ -99,7 +99,8 @@ def input_system(entities, delta_time=0):
                     # fixme this is tightly coupled with some magic, think of a different way?
                     # for now states will be enumerated in constants
                     key = STATE_ATTACKING
-                    animation.set_state(key)
+                    animation.set_state('backwards', False)
+                    print("switched animation")
 
                 print("Player attacked!")
 
@@ -143,7 +144,7 @@ def graphics_system(entities, output=None, delta_time=0):
 
     # process animated entities
     for entity in relevant_entities(entities, [AnimatedSpriteComponent.name, PositionComponent.name]):
-        img = entity.components[AnimatedSpriteComponent.name].get_image()
+        img = entity.components[AnimatedSpriteComponent.name].get_image(delta_time)
         pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
 
         output.blit(img, pos)
