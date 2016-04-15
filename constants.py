@@ -1,1 +1,2 @@
 PLAYER_MOVE_SPEED = 0.8
+STATE_ATTACKING = 'attacking_'

@@ -122,3 +122,38 @@ class TimeToLiveComponent(Component):
 
     def is_alive(self):
         return self.ttl <= 0.0
+
+
+class SpriteComponent(Component):
+    name = 'SpriteComponent'
+
+    def __init__(self, sprite):
+        Component.__init__(self)
+        self.sprite = sprite
+
+    def get_image(self):
+        return self.sprite
+
+
+class AnimatedSpriteComponent(SpriteComponent):
+    name = 'AnimatedSpriteComponent'
+
+    def __init__(self, sprites, initial_state):
+        Component.__init__(self)
+        # sprites is a dictionary indexed by state and state_index to retrieve an image
+        self.sprites = sprites
+        self.states = list(sprites.keys)
+
+        self.state = initial_state
+        self.state_index = 0
+
+    def set_state(self, new_state):
+        if new_state in self.states:
+            self.state = new_state
+
+    def get_image(self):
+        # advance state_index
+        self.state_index = (self.state_index + 1) % len(self.sprites[self.state])
+
+        return self.sprites[self.state][self.sprites]
+
