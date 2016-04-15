@@ -142,18 +142,29 @@ class AnimatedSpriteComponent(SpriteComponent):
         Component.__init__(self)
         # sprites is a dictionary indexed by state and state_index to retrieve an image
         self.sprites = sprites
-        self.states = list(sprites.keys)
+        self.states = list(sprites.keys())
 
         self.state = initial_state
         self.state_index = 0
 
-    def set_state(self, new_state):
+        self.next_state = initial_state
+
+    def set_state(self, new_state, repeated=True):
+        if repeated:
+            self.next_state = new_state
+        else:
+            # otherwise, once this animation completes, we return to last state
+            self.next_state = self.state
+
         if new_state in self.states:
             self.state = new_state
 
     def get_image(self):
         # advance state_index
-        self.state_index = (self.state_index + 1) % len(self.sprites[self.state])
+        self.state_index += 1
+        if self.state_index >= len(self.sprites[self.state]):
+            self.state = self.next_state
+            self.state_index = 0
 
-        return self.sprites[self.state][self.sprites]
+        return self.sprites[self.state][self.state_index]
 
