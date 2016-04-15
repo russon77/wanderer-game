@@ -156,9 +156,6 @@ class AnimatedSpriteComponent(SpriteComponent):
         if new_state in self.states:
             if repeated:
                 self.next_state = new_state
-            else:
-                # otherwise, once this animation completes, we return to last state
-                self.next_state = self.state
 
             self.state_index = 0
             self.state = new_state

@@ -18,24 +18,36 @@ fps_clock = pygame.time.Clock()
 ball = pygame.image.load("ball.bmp")
 ball_rect = ball.get_rect()
 
-sprite_list = []
-sheet = pygame.image.load("runningcat.png").convert()
-for i in range(0, 4):
-    src_width = int(1024 / 2)
-    src_height = int(1024 / 4)
 
-    src_x = (i % 2) * src_width
-    src_y = i * src_height
+sprites = {
+    'running': [],
+    'attacking': []
+}
+
+sheet = pygame.image.load("walking.png").convert()
+for i in range(0, 4):
+    src_width = int(220 / 4)
+    src_height = 80
+
+    src_x = i * src_width
+    src_y = 0
 
     surf = pygame.Surface((src_width, src_height))
     surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
 
-    sprite_list.append(surf)
+    sprites['running'].append(surf)
 
-sprites = {
-    'running': sprite_list,
-    'backwards': list(reversed(sprite_list))
-}
+sheet = pygame.image.load("attacking.png").convert()
+for i in range(0, 3):
+    src_width = int(220 / 3)
+    src_height = 80
+    src_x = i * src_width
+    src_y = 0
+
+    surf = pygame.Surface((src_width, src_height))
+    surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
+
+    sprites['attacking'].append(surf)
 
 player_input = InputComponent()
 player_pos = PositionComponent((width - ball_rect.width) / 2, (height - ball_rect.height) / 2)

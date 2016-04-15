@@ -99,7 +99,7 @@ def input_system(entities, delta_time=0):
                     # fixme this is tightly coupled with some magic, think of a different way?
                     # for now states will be enumerated in constants
                     key = STATE_ATTACKING
-                    animation.set_state('backwards', False)
+                    animation.set_state('attacking', False)
                     print("switched animation")
 
                 print("Player attacked!")
