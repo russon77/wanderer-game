@@ -22,13 +22,22 @@ def movement_system(entities, delta_time=0):
     # for now, we aren't worrying about acceleration. that will come later todo or another system
     requirements = [PositionComponent.name, MovementComponent.name]
     optionals = [(MovementComponent.name, AccelerationComponent.name)]
+    disallowed = [RootedComponent.name]
 
-    for entity in relevant_entities(entities, requirements):
+    for entity in relevant_entities(entities, requirements, disallowed_components=disallowed):
         pos = entity.components[PositionComponent.name]
         mov = entity.components[MovementComponent.name]
 
         # move according to forever-velocities (aka constant-time)
         pos.move(mov.velx, mov.vely, delta_time)
+
+        # testing. update the animation state if necessary
+        ani = entity.components.get(AnimatedSpriteComponent.name)
+        if ani is not None:
+            if mov.velx > 0.0 or mov.velx < 0.0 or mov.vely > 0.0 or mov.vely < 0.0:
+                    ani.set_state(STATE_MOVING, reset_index_on_duplicate=False)
+            else:
+                ani.set_state(STATE_STANDING_STILL, reset_index_on_duplicate=False)
 
         # move according to dynamic-velocities (aka will be removed after time runs out)
         # todo how to age dynamic movements?
@@ -98,6 +107,9 @@ def input_system(entities, delta_time=0):
                 if animation is not None:
                     animation.set_state(STATE_ATTACKING, False)
 
+                # player cannot move while attacking
+                entity.components[RootedComponent.name] = RootedComponent(PLAYER_ATTACK_ANIMATION_DURATION)
+
                 print("Player attacked!")
 
         # after processing, remove all keys
@@ -106,6 +118,7 @@ def input_system(entities, delta_time=0):
 
 
 def aging_system(entities, delta_time=0):
+    # remove stale entities
     to_remove = []
     for entity in relevant_entities(entities, [TimeToLiveComponent.name]):
         ttl_comp = entity.components[TimeToLiveComponent.name]
@@ -113,6 +126,18 @@ def aging_system(entities, delta_time=0):
             to_remove.append(entity)
 
     [entities.remove(x) for x in to_remove]
+
+    # remove stale components from entities
+    for entity in entities:
+        to_remove = []
+        for key in entity.components.keys():
+            if isinstance(entity.components[key], StatusComponent):
+                if entity.components[key].advance(delta_time):
+                    to_remove.append(key)
+
+        for key in to_remove:
+            del entity.components[key]
+
 
 mss_rate = 3
 

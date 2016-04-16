@@ -124,6 +124,28 @@ class TimeToLiveComponent(Component):
         return self.ttl <= 0.0
 
 
+class StatusComponent(Component):
+    name = 'DebuffComponent'
+
+    def __init__(self, ttl):
+        Component.__init__(self)
+        self.ttl = ttl
+
+    def advance(self, time):
+        self.ttl -= time
+        return self.ttl <= 0.0
+
+    def in_effect(self):
+        return self.ttl <= 0.0
+
+
+class RootedComponent(StatusComponent):
+    name = 'RootedComponent'
+
+    def __init__(self, ttl):
+        StatusComponent.__init__(self, ttl)
+
+
 class SpriteComponent(Component):
     name = 'SpriteComponent'
 
@@ -154,12 +176,15 @@ class AnimatedSpriteComponent(SpriteComponent):
         self.timer = 0.0
         self.time_between_frames = time_between_frames
 
-    def set_state(self, new_state, repeated=True):
+    def set_state(self, new_state, repeated=True, reset_index_on_duplicate=True):
         if new_state in self.states:
             if repeated:
                 self.next_state = new_state
 
-            self.state_index = 0
+            if self.state != new_state:
+                self.state_index = 0
+            elif self.state == new_state and reset_index_on_duplicate:
+                self.state_index = 0
             self.state = new_state
 
     def get_image(self, delta_time=0):
