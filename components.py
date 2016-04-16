@@ -60,7 +60,7 @@ class DirectionComponent(Component):
     North = 0
     South = 1
     East = 2
-    West = 2
+    West = 3
 
     def __init__(self, direction=South):
         Component.__init__(self)
@@ -90,7 +90,7 @@ class DamageComponent(Component):
 
     def __init__(self, damage):
         Component.__init__(self)
-        self.damage = damage  # ideally is a pygame Rect object
+        self.damage = damage
 
 
 class AttackComponent(Component):
@@ -128,6 +128,7 @@ class SpriteComponent(Component):
     name = 'SpriteComponent'
 
     def __init__(self, sprite):
+        # todo change to a dictionary/state like object
         Component.__init__(self)
         self.sprite = sprite
 
@@ -141,6 +142,7 @@ class AnimatedSpriteComponent(SpriteComponent):
     def __init__(self, sprites, initial_state, time_between_frames):
         Component.__init__(self)
         # sprites is a dictionary indexed by state and state_index to retrieve an image
+        # todo add direction i.e. sprites[state][direction][index] = surface to draw
         self.sprites = sprites
         self.states = list(sprites.keys())
 
