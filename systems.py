@@ -31,14 +31,6 @@ def movement_system(entities, delta_time=0):
         # move according to forever-velocities (aka constant-time)
         pos.move(mov.velx, mov.vely, delta_time)
 
-        # testing. update the animation state if necessary
-        ani = entity.components.get(AnimatedSpriteComponent.name)
-        if ani is not None:
-            if mov.velx > 0.0 or mov.velx < 0.0 or mov.vely > 0.0 or mov.vely < 0.0:
-                    ani.set_state(STATE_MOVING, reset_index_on_duplicate=False)
-            else:
-                ani.set_state(STATE_STANDING_STILL, reset_index_on_duplicate=False)
-
         # move according to dynamic-velocities (aka will be removed after time runs out)
         # todo how to age dynamic movements?
         for dyn in mov.dynamic:
@@ -47,7 +39,7 @@ def movement_system(entities, delta_time=0):
         # todo purge any stale dynamic movements
 
 
-def input_system(entities, delta_time=0):
+def input_system(entities, **kwargs):
     """
     for each entity that has an input component, take the appropriate action by the component's state
 
@@ -179,3 +171,35 @@ def graphics_system(entities, output=None, delta_time=0):
         pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
 
         output.blit(img, pos)
+
+
+def direction_system(entities, **kwargs):
+    for entity in relevant_entities(entities,
+                                    [MovementComponent.name, DirectionComponent.name],
+                                    disallowed_components=[RootedComponent.name]):  # if you're stuck, you're stuck!
+        mov = entity.components[MovementComponent.name]
+        dire = entity.components[DirectionComponent.name]
+
+        if mov.velx < 0.0:
+            dire.set(DirectionComponent.West)
+        elif mov.velx > 0.0:
+            dire.set(DirectionComponent.East)
+        elif mov.vely < 0.0:
+            dire.set(DirectionComponent.North)
+        elif mov.vely > 0.0:
+            dire.set(DirectionComponent.South)
+
+
+def direction_movement_animation_system(entities, **kwargs):
+    for entity in relevant_entities(entities,
+                                    [MovementComponent.name, DirectionComponent.name, AnimatedSpriteComponent.name],
+                                    disallowed_components=[RootedComponent.name]):  # if you're stuck, you're stuck!
+        # seems to be working. will keep this here until a better way is found
+        ani = entity.components[AnimatedSpriteComponent.name]
+        mov = entity.components[MovementComponent.name]
+        dire = entity.components[DirectionComponent.name]
+
+        if mov.velx > 0.0 or mov.velx < 0.0 or mov.vely > 0.0 or mov.vely < 0.0:
+            ani.set_state(STATE_MOVING + dire.direction, reset_index_on_duplicate=False)
+        else:
+            ani.set_state(STATE_STANDING_STILL + dire.direction, reset_index_on_duplicate=False)

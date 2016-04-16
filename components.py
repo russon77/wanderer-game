@@ -57,14 +57,18 @@ class AccelerationComponent(Component):
 class DirectionComponent(Component):
     name = 'DirectionComponent'
 
-    North = 0
-    South = 1
-    East = 2
-    West = 3
+    North = 'North'
+    South = 'South'
+    East = 'East'
+    West = 'West'
 
     def __init__(self, direction=South):
         Component.__init__(self)
         self.direction = direction
+
+    def set(self, val):
+        if val in [self.North, self.South, self.East, self.West]:
+            self.direction = val
 
 
 class InputComponent(Component):

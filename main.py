@@ -5,6 +5,7 @@ from pygame.locals import *
 from entities import *
 from components import *
 from systems import *
+from loader import load_player_sprites
 
 pygame.init()
 
@@ -19,50 +20,7 @@ ball = pygame.image.load("ball.bmp")
 ball_rect = ball.get_rect()
 
 
-sprites = {
-    STATE_MOVING: [],
-    STATE_ATTACKING: [],
-    STATE_STANDING_STILL: []
-}
-
-sheet = pygame.image.load("standing.png").convert()
-for i in range(0, 3):
-    src_width = int(160 / 3)
-    src_height = 80
-
-    src_x = i * src_width
-    src_y = 0
-
-    surf = pygame.Surface((src_width, src_height))
-    surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
-
-    sprites[STATE_STANDING_STILL].append(surf)
-
-
-sheet = pygame.image.load("walking.png").convert()
-for i in range(0, 4):
-    src_width = int(220 / 4)
-    src_height = 80
-
-    src_x = i * src_width
-    src_y = 0
-
-    surf = pygame.Surface((src_width, src_height))
-    surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
-
-    sprites[STATE_MOVING].append(surf)
-
-sheet = pygame.image.load("attacking.png").convert()
-for i in range(0, 3):
-    src_width = int(220 / 3)
-    src_height = 80
-    src_x = i * src_width
-    src_y = 0
-
-    surf = pygame.Surface((src_width, src_height))
-    surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
-
-    sprites[STATE_ATTACKING].append(surf)
+sprites = load_player_sprites()
 
 player_input = InputComponent()
 player_pos = PositionComponent((width - ball_rect.width) / 2, (height - ball_rect.height) / 2)
@@ -72,10 +30,18 @@ player = Entity([player_pos,
                  BoundsComponent(ball_rect),
                  AttackComponent(),
                  DirectionComponent(),
-                 AnimatedSpriteComponent(sprites, STATE_STANDING_STILL, 200)])
+                 AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100)])
 
 entities = [player]
-systems = [movement_system, input_system, aging_system, graphics_system]
+systems = \
+    [
+        aging_system,
+        input_system,
+        direction_system,
+        direction_movement_animation_system,
+        movement_system,
+        graphics_system
+    ]
 
 while True:
     key_transitions = {}
