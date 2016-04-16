@@ -146,6 +146,13 @@ class RootedComponent(StatusComponent):
         StatusComponent.__init__(self, ttl)
 
 
+class UnableToAttackComponent(StatusComponent):
+    name = 'UnableToAttackComponent'
+
+    def __init__(self, ttl):
+        StatusComponent.__init__(self, ttl)
+
+
 class SpriteComponent(Component):
     name = 'SpriteComponent'
 

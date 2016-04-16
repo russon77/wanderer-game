@@ -89,9 +89,10 @@ def input_system(entities, delta_time=0):
         attack = entity.components.get(AttackComponent.name)
         direction = entity.components.get(DirectionComponent.name)
         position = entity.components.get(PositionComponent.name)
+        debuff_cant_attack = entity.components.get(UnableToAttackComponent.name)
 
         # todo implement attacks other than spin attack
-        if attack is not None and direction is not None and position is not None:
+        if attack is not None and direction is not None and position is not None and debuff_cant_attack is None:
             space = comp.keys.get(K_SPACE)
             if space == True:
                 # attack!
@@ -109,6 +110,8 @@ def input_system(entities, delta_time=0):
 
                 # player cannot move while attacking
                 entity.components[RootedComponent.name] = RootedComponent(PLAYER_ATTACK_ANIMATION_DURATION)
+                entity.components[UnableToAttackComponent.name] = \
+                    UnableToAttackComponent(PLAYER_ATTACK_ANIMATION_DURATION)
 
                 print("Player attacked!")
 
