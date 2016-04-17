@@ -1,4 +1,5 @@
 from pygame.locals import *
+import pygame
 
 
 class Component(object):
@@ -6,21 +7,6 @@ class Component(object):
 
     def __init__(self):
         pass
-
-
-class PositionComponent(Component):
-    name = 'PositionComponent'
-
-    def __init__(self, posx=0, posy=0):
-        Component.__init__(self)
-        self.posx = posx
-        self.posy = posy
-
-        self.name = PositionComponent.name
-
-    def move(self, x, y, delta):
-        self.posx += x * delta
-        self.posy += y * delta
 
 
 class MovementComponent(Component):
@@ -86,15 +72,7 @@ class BoundsComponent(Component):
 
     def __init__(self, bounds):
         Component.__init__(self)
-        self.bounds = bounds  # ideally is a pygame Rect object
-
-
-class DamageComponent(Component):
-    name = 'DamageComponent'
-
-    def __init__(self, damage):
-        Component.__init__(self)
-        self.damage = damage
+        self.bounds = bounds  # is a pygame.Rect object
 
 
 class AttackComponent(Component):
@@ -215,3 +193,37 @@ class AnimatedSpriteComponent(SpriteComponent):
 
         return self.sprites[self.state][self.state_index]
 
+
+class CollisionImmaterialComponent(Component):
+    name = 'CollisionImmaterialComponent'
+
+    def __init__(self):
+        Component.__init__(self)
+
+
+class CollisionSolidComponent(Component):
+    name = 'CollisionSolidComponent'
+
+    def __init__(self):
+        Component.__init__(self)
+
+
+class CollisionKnockbackComponent(Component):
+    name = 'CollisionKnockbackComponent'
+
+    def __init__(self, knockback):
+        Component.__init__(self)
+
+        self.knockback = knockback
+
+
+class CollisionDamagingComponent(Component):
+    """
+    any collision involving an entity with this component will hurt the other entity for damage
+    """
+    name = 'CollisionDamagingComponent'
+
+    def __init__(self, damage):
+        Component.__init__(self)
+
+        self.damage = damage

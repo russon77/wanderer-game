@@ -20,23 +20,68 @@ def movement_system(entities, delta_time=0):
     # only want to process entities who have a PositionComponent and either Movement or Acceleration Component
 
     # for now, we aren't worrying about acceleration. that will come later todo or another system
-    requirements = [PositionComponent.name, MovementComponent.name]
+    requirements = [BoundsComponent.name, MovementComponent.name]
     optionals = [(MovementComponent.name, AccelerationComponent.name)]
-    disallowed = [RootedComponent.name]
 
-    for entity in relevant_entities(entities, requirements, disallowed_components=disallowed):
-        pos = entity.components[PositionComponent.name]
+    for entity in relevant_entities(entities, requirements):
+        pos = entity.components[BoundsComponent.name]
         mov = entity.components[MovementComponent.name]
 
-        # move according to forever-velocities (aka constant-time)
-        pos.move(mov.velx, mov.vely, delta_time)
+        # sums for which to ultimately apply change in position
+        delta_x, delta_y = 0, 0
+
+        # disallow self-drive n movement while rooted. dynamic movements can still be applied
+        rooted = entity.components.get(RootedComponent.name)
+        if rooted is None:
+            # move according to forever-velocities (aka constant-time)
+            delta_x += mov.velx
+            delta_y += mov.vely
 
         # move according to dynamic-velocities (aka will be removed after time runs out)
-        # todo how to age dynamic movements?
+        updated_dynamics = []
         for dyn in mov.dynamic:
-            pos.move(*dyn)
+            delta_x += dyn[0]
+            delta_y += dyn[1]
 
-        # todo purge any stale dynamic movements
+            # purge any stale movements
+            if dyn[2] - delta_time > 0.0:
+                updated_dynamics = (dyn[0], dyn[1], dyn[2] - delta_time)
+
+        # it's not great, but it should work
+        mov.dynamic = updated_dynamics
+
+        # move will return a new Rect but not mutate the existing one
+        new_pos = pos.bounds.move(delta_x * delta_time, delta_y * delta_time)
+
+        if collision_system(new_pos, entity, entities):
+            # finally, move the entity
+            pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
+
+
+def collision_system(new, current, entities):
+    """
+    collision system will be called by the movement system with the new position of one entity to compute against
+    the other entities with a position and bounds component
+
+    result of collision will be based on the collision-relevant traits of each entity
+
+    Returns True if player can move
+    """
+    can_move = True
+    for entity in relevant_entities(entities,
+                                    [BoundsComponent.name],
+                                    disallowed_components=[CollisionImmaterialComponent.name]):
+        # do not process an entity's collision with itself
+        if entity is current:
+            continue
+
+        target_bounds = entity.components[BoundsComponent.name].bounds
+        # given the pygame.Rect object 'new' and the pygame.Rect object, check for collision!
+        if target_bounds.colliderect(new):
+            print("collision detected!")
+            can_move = False
+
+        return can_move
 
 
 def input_system(entities, **kwargs):
@@ -80,7 +125,7 @@ def input_system(entities, **kwargs):
 
         attack = entity.components.get(AttackComponent.name)
         direction = entity.components.get(DirectionComponent.name)
-        position = entity.components.get(PositionComponent.name)
+        position = entity.components.get(BoundsComponent.name)
         debuff_cant_attack = entity.components.get(UnableToAttackComponent.name)
 
         # todo implement attacks other than spin attack
@@ -89,12 +134,9 @@ def input_system(entities, **kwargs):
             if space == True:
                 # attack!
                 width, height = attack.ar, attack.ar  # attack radius
-                posx, posy = (position.posx - width) / 2, (position.posy - height) / 2
+                posx, posy = (position.bounds.x - width) / 2, (position.bounds.y - height) / 2
                 attack_bounds = Rect(posx, posy, width, height)
-                entities.append(Entity([PositionComponent(posx, posy),
-                                        BoundsComponent(attack_bounds),
-                                        DamageComponent(attack.damage),
-                                        TimeToLiveComponent(1.5)]))  # todo change magic number to constant
+                # todo make attacks a real thing
 
                 animation = entity.components.get(AnimatedSpriteComponent.name)
                 if animation is not None:
@@ -142,9 +184,7 @@ def monster_spawn_system(entities, delta_time=0, global_timer=1):
         # spawn a monster!
         entities.append(
             [
-                PositionComponent(),
-                MovementComponent(),
-                DamageComponent(1)
+                MovementComponent()
             ]
         )
 
@@ -159,16 +199,16 @@ def graphics_system(entities, output=None, delta_time=0):
     # todo combine both static and dynamic through use of their shared "get_image()" interface
 
     # process animated entities
-    for entity in relevant_entities(entities, [AnimatedSpriteComponent.name, PositionComponent.name]):
+    for entity in relevant_entities(entities, [AnimatedSpriteComponent.name, BoundsComponent.name]):
         img = entity.components[AnimatedSpriteComponent.name].get_image(delta_time)
-        pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
+        pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
 
         output.blit(img, pos)
 
     # todo process static entries
-    for entity in relevant_entities(entities, [SpriteComponent.name, PositionComponent.name]):
+    for entity in relevant_entities(entities, [SpriteComponent.name, BoundsComponent.name]):
         img = entity.components[SpriteComponent.name].get_image()
-        pos = entity.components[PositionComponent.name].posx, entity.components[PositionComponent.name].posy
+        pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
 
         output.blit(img, pos)
 

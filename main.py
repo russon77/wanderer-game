@@ -19,17 +19,15 @@ fps_clock = pygame.time.Clock()
 sprites = load_player_sprites()
 
 player_input = InputComponent()
-player_pos = PositionComponent(width / 2, height / 2)
-player = Entity([player_pos,
+player = Entity([BoundsComponent(Rect(width / 2, height / 2, 64, 64)),
                  player_input,
                  MovementComponent(),
-                 # BoundsComponent(ball_rect),
                  AttackComponent(),
                  DirectionComponent(),
                  AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100)])
 
 dummy = Entity([
-    PositionComponent(10, 10),
+    BoundsComponent(Rect(10, 10, 64, 64)),
     AnimatedSpriteComponent(load_target_dummy())
 ])
 
