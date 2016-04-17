@@ -98,7 +98,7 @@ def input_system(entities, **kwargs):
 
                 animation = entity.components.get(AnimatedSpriteComponent.name)
                 if animation is not None:
-                    animation.set_state(STATE_ATTACKING, False)
+                    animation.set_state(STATE_ATTACKING + direction.direction, False)
 
                 # player cannot move while attacking
                 entity.components[RootedComponent.name] = RootedComponent(PLAYER_ATTACK_ANIMATION_DURATION)

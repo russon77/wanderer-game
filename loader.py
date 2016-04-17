@@ -29,19 +29,20 @@ def load_sprite_file(name, num):
 
 def load_player_sprites():
     sprites = {
-        STATE_MOVING: load_sprite_file("walking.png", 4),
-        STATE_ATTACKING: load_sprite_file("attacking.png", 3),
-        STATE_STANDING_STILL: load_sprite_file("standing.png", 3),
+        STATE_ATTACKING_NORTH: load_sprite_file("data/human/attacking_north.png", 8),
+        STATE_ATTACKING_SOUTH: load_sprite_file("data/human/attacking_south.png", 8),
+        STATE_ATTACKING_EAST: load_sprite_file("data/human/attacking_east.png", 8),
+        STATE_ATTACKING_WEST: load_sprite_file("data/human/attacking_west.png", 8),
 
-        STATE_STANDING_STILL_NORTH: load_sprite_file("images/standing_still_north.png", 1),
-        STATE_STANDING_STILL_SOUTH: load_sprite_file("images/standing_still_south.png", 1),
-        STATE_STANDING_STILL_EAST: load_sprite_file("images/standing_still_east.png", 1),
-        STATE_STANDING_STILL_WEST: load_sprite_file("images/standing_still_west.png", 1),
+        STATE_STANDING_STILL_NORTH: load_sprite_file("data/human/standing_still_north.png", 1),
+        STATE_STANDING_STILL_SOUTH: load_sprite_file("data/human/standing_still_south.png", 1),
+        STATE_STANDING_STILL_EAST: load_sprite_file("data/human/standing_still_east.png", 1),
+        STATE_STANDING_STILL_WEST: load_sprite_file("data/human/standing_still_west.png", 1),
 
-        STATE_MOVING_NORTH: load_sprite_file("images/walking_north.png", 4),
-        STATE_MOVING_SOUTH: load_sprite_file("images/walking_south.png", 4),
-        STATE_MOVING_EAST: load_sprite_file("images/walking_east.png", 4),
-        STATE_MOVING_WEST: load_sprite_file("images/walking_west.png", 4)
+        STATE_MOVING_NORTH: load_sprite_file("data/human/walking_north.png", 9),
+        STATE_MOVING_SOUTH: load_sprite_file("data/human/walking_south.png", 9),
+        STATE_MOVING_EAST: load_sprite_file("data/human/walking_east.png", 9),
+        STATE_MOVING_WEST: load_sprite_file("data/human/walking_west.png", 9)
 
     }
 
