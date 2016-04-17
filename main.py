@@ -5,7 +5,7 @@ from pygame.locals import *
 from entities import *
 from components import *
 from systems import *
-from loader import load_player_sprites
+from loader import load_player_sprites, load_target_dummy
 
 pygame.init()
 
@@ -16,23 +16,24 @@ screen = pygame.display.set_mode(size)
 
 fps_clock = pygame.time.Clock()
 
-ball = pygame.image.load("ball.bmp")
-ball_rect = ball.get_rect()
-
-
 sprites = load_player_sprites()
 
 player_input = InputComponent()
-player_pos = PositionComponent((width - ball_rect.width) / 2, (height - ball_rect.height) / 2)
+player_pos = PositionComponent(width / 2, height / 2)
 player = Entity([player_pos,
                  player_input,
                  MovementComponent(),
-                 BoundsComponent(ball_rect),
+                 # BoundsComponent(ball_rect),
                  AttackComponent(),
                  DirectionComponent(),
                  AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100)])
 
-entities = [player]
+dummy = Entity([
+    PositionComponent(10, 10),
+    AnimatedSpriteComponent(load_target_dummy())
+])
+
+entities = [player, dummy]
 systems = \
     [
         aging_system,

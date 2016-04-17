@@ -27,6 +27,12 @@ def load_sprite_file(name, num):
     return sprites
 
 
+def load_target_dummy():
+    return {
+        STATE_STANDING_STILL: load_sprite_file("data/target_dummy/combat_dummy.png", 8)
+    }
+
+
 def load_player_sprites():
     sprites = {
         STATE_ATTACKING_NORTH: load_sprite_file("data/human/attacking_north.png", 8),
