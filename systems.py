@@ -81,7 +81,7 @@ def collision_system(new, current, entities):
             print("collision detected!")
             can_move = False
 
-        return can_move
+    return can_move
 
 
 def input_system(entities, **kwargs):
