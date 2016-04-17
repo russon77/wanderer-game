@@ -172,17 +172,20 @@ class SpriteComponent(Component):
 class AnimatedSpriteComponent(SpriteComponent):
     name = 'AnimatedSpriteComponent'
 
-    def __init__(self, sprites, initial_state, time_between_frames):
+    def __init__(self, sprites, initial_state=None, time_between_frames=100):
         Component.__init__(self)
         # sprites is a dictionary indexed by state and state_index to retrieve an image
-        # todo add direction i.e. sprites[state][direction][index] = surface to draw
         self.sprites = sprites
         self.states = list(sprites.keys())
 
-        self.state = initial_state
-        self.state_index = 0
+        if initial_state is None:
+            self.state = list(sprites.keys())[0]
+        else:
+            self.state = initial_state
 
-        self.next_state = initial_state
+        self.next_state = self.state
+
+        self.state_index = 0
 
         self.timer = 0.0
         self.time_between_frames = time_between_frames
