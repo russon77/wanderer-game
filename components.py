@@ -3,6 +3,9 @@ import pygame
 
 
 class Component(object):
+    """
+    base class to be inherited by any component
+    """
     Forever = 'Forever'
 
     def __init__(self):
@@ -10,6 +13,16 @@ class Component(object):
 
 
 class MovementComponent(Component):
+    """
+    represents movement. when combined with a Bounds component, the Entity will move according to its
+    dynamic and constant velocities
+
+    constant velocities are for example the velocities set when a player moves his character. they will be also used
+    by the ai system for moving those Entities around. constant velocities are constant in the sense that they have to
+    be manually managed (i.e. they last forever)
+
+    dynamic velocities, on the other hand, have a finite lifetime. they are used i.e. for applying knockback effects.
+    """
     name = 'MovementComponent'
 
     def __init__(self, velx=0, vely=0, dynamic=list()):
@@ -29,18 +42,11 @@ class MovementComponent(Component):
         self.dynamic.append((velx, vely, ttl))
 
 
-class AccelerationComponent(Component):
-    name = 'AccelerationComponent'
-
-    def __init__(self, accx=0, accy=0):
-        Component.__init__(self)
-        self.accx = accx
-        self.accy = accy
-
-        self.name = AccelerationComponent.name
-
-
 class DirectionComponent(Component):
+    """
+    direction component maintains the direction of an Entity. it is implemented in terms of the compass for four
+    directions.
+    """
     name = 'DirectionComponent'
 
     North = 'North'
@@ -58,6 +64,12 @@ class DirectionComponent(Component):
 
 
 class InputComponent(Component):
+    """
+    input component keeps record of the change in keyboard state between frames.
+
+    setting keys[KEY_CONSTANT] = True means that the key was pressed DOWN, while setting it to False means that the key
+    was released. the input component should be reset after processing.
+    """
     name = 'InputComponent'
 
     def __init__(self):
@@ -68,6 +80,9 @@ class InputComponent(Component):
 
 
 class BoundsComponent(Component):
+    """
+    bounds component keeps position and boundaries of an Entity as a pygame.Rect object.
+    """
     name = 'BoundsComponent'
 
     def __init__(self, bounds):
@@ -76,6 +91,9 @@ class BoundsComponent(Component):
 
 
 class AttackComponent(Component):
+    """
+    attack component represents the current type of attack that will be executed when an Entity 'attacks'
+    """
     Slash = 0
     Stab = 1
     Spin = 2
@@ -92,6 +110,10 @@ class AttackComponent(Component):
 
 
 class TimeToLiveComponent(Component):
+    """
+    ttl component implements a death timer for an Entity. the aging system will call advance(delta), and when the
+    component has expired, the Entity will be deleted.
+    """
     name = 'TimeToLiveComponent'
 
     def __init__(self, ttl):
@@ -107,7 +129,10 @@ class TimeToLiveComponent(Component):
 
 
 class StatusComponent(Component):
-    name = 'DebuffComponent'
+    """
+    status component is the base class for all status effects that have a finite lifetime.
+    """
+    name = 'StatusComponent'
 
     def __init__(self, ttl):
         Component.__init__(self)
@@ -122,6 +147,9 @@ class StatusComponent(Component):
 
 
 class RootedComponent(StatusComponent):
+    """
+    rooted component will stop Entity from moving (i.e. any change in position)
+    """
     name = 'RootedComponent'
 
     def __init__(self, ttl):
@@ -129,6 +157,9 @@ class RootedComponent(StatusComponent):
 
 
 class UnableToAttackComponent(StatusComponent):
+    """
+    unable to attack component is a debuff in which an Entity cannot execute any attacks
+    """
     name = 'UnableToAttackComponent'
 
     def __init__(self, ttl):
@@ -136,18 +167,25 @@ class UnableToAttackComponent(StatusComponent):
 
 
 class SpriteComponent(Component):
+    """
+    sprite component is the base component for a single, static sprite image
+    """
     name = 'SpriteComponent'
 
     def __init__(self, sprite):
-        # todo change to a dictionary/state like object
         Component.__init__(self)
         self.sprite = sprite
 
-    def get_image(self):
+    def get_image(self, **kwargs):
         return self.sprite
 
 
 class AnimatedSpriteComponent(SpriteComponent):
+    """
+    animated sprite component uses the same interface for getting its current image as sprite component
+
+    however, this class implements sprite as a dictionary of lists, where sprites[STATE][INDEX] = surface to draw
+    """
     name = 'AnimatedSpriteComponent'
 
     def __init__(self, sprites, initial_state=None, time_between_frames=100):
@@ -206,6 +244,9 @@ class CollisionImmaterialComponent(Component):
 
 
 class CollisionSolidComponent(Component):
+    """
+    component to represent that this object is not able to be passed through
+    """
     name = 'CollisionSolidComponent'
 
     def __init__(self):
@@ -213,6 +254,9 @@ class CollisionSolidComponent(Component):
 
 
 class CollisionKnockbackComponent(Component):
+    """
+    component representing degree of knockback to apply to anything that collides with Entity
+    """
     name = 'CollisionKnockbackComponent'
 
     def __init__(self, knockback, duration):

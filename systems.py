@@ -23,7 +23,6 @@ def movement_system(entities, delta_time=0):
 
     # for now, we aren't worrying about acceleration. that will come later todo or another system
     requirements = [BoundsComponent.name, MovementComponent.name]
-    optionals = [(MovementComponent.name, AccelerationComponent.name)]
 
     for entity in relevant_entities(entities, requirements):
         pos = entity.components[BoundsComponent.name]
@@ -242,16 +241,13 @@ def graphics_system(entities, output=None, delta_time=0):
         reverse=False
     )
 
-    # process animated entities
-    for entity in relevant_entities(entities_to_draw, [AnimatedSpriteComponent.name, BoundsComponent.name]):
-        img = entity.components[AnimatedSpriteComponent.name].get_image(delta_time)
-        pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
+    # process all entries
+    for entity in entities_to_draw:
+        img = entity.components.get(AnimatedSpriteComponent.name)
+        if img is None:
+            img = entity.components[SpriteComponent.name]
 
-        output.blit(img, pos)
-
-    # todo process static entries
-    for entity in relevant_entities(entities_to_draw, [SpriteComponent.name, BoundsComponent.name]):
-        img = entity.components[SpriteComponent.name].get_image()
+        img = img.get_image(delta_time=delta_time)
         pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
 
         output.blit(img, pos)
