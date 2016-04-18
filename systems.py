@@ -234,17 +234,23 @@ def graphics_system(entities, output=None, delta_time=0):
     if output is None:
         return
 
-    # todo combine both static and dynamic through use of their shared "get_image()" interface
+    # have to draw the entities in the correct order. any entity positioned 'below' another should be drawn afterward
+    # todo move this somewhere else to be more efficient (if it becomes an issue)
+    entities_to_draw = [entity for entity in relevant_entities(entities, [BoundsComponent.name], optional_components=[(AnimatedSpriteComponent.name, SpriteComponent.name)])]
+    entities_to_draw.sort(
+        key=lambda x: x.components[BoundsComponent.name].bounds.y,
+        reverse=False
+    )
 
     # process animated entities
-    for entity in relevant_entities(entities, [AnimatedSpriteComponent.name, BoundsComponent.name]):
+    for entity in relevant_entities(entities_to_draw, [AnimatedSpriteComponent.name, BoundsComponent.name]):
         img = entity.components[AnimatedSpriteComponent.name].get_image(delta_time)
         pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
 
         output.blit(img, pos)
 
     # todo process static entries
-    for entity in relevant_entities(entities, [SpriteComponent.name, BoundsComponent.name]):
+    for entity in relevant_entities(entities_to_draw, [SpriteComponent.name, BoundsComponent.name]):
         img = entity.components[SpriteComponent.name].get_image()
         pos = entity.components[BoundsComponent.name].bounds.x, entity.components[BoundsComponent.name].bounds.y
 
