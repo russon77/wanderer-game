@@ -8,7 +8,7 @@ from components import *
 
 @lru_cache()
 def load_sprite_file(name, num):
-    sheet = pygame.image.load(os.path.join('./', name)).convert()
+    sheet = pygame.image.load(os.path.join('./', name)).convert_alpha()
 
     bounds = sheet.get_rect()
 
@@ -21,7 +21,7 @@ def load_sprite_file(name, num):
         src_x = i * src_width
         src_y = 0
 
-        surf = pygame.Surface((src_width, src_height))
+        surf = pygame.Surface((src_width, src_height), pygame.SRCALPHA, 32)
         surf.blit(sheet, (0, 0), (src_x, src_y, src_width, src_height))
 
         sprites.append(surf)
