@@ -1,10 +1,12 @@
 import pygame
 import os
+from functools import lru_cache
 
 from constants import *
 from components import *
 
 
+@lru_cache()
 def load_sprite_file(name, num):
     sheet = pygame.image.load(os.path.join('./', name)).convert()
 
