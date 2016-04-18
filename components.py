@@ -195,6 +195,10 @@ class AnimatedSpriteComponent(SpriteComponent):
 
 
 class CollisionImmaterialComponent(Component):
+    """
+    me thinks that this is unnecessary. simply avoiding to add any other collision component should mean that
+    the entity is ignored by the collision system (while keeping movement in-tact)
+    """
     name = 'CollisionImmaterialComponent'
 
     def __init__(self):
@@ -211,10 +215,11 @@ class CollisionSolidComponent(Component):
 class CollisionKnockbackComponent(Component):
     name = 'CollisionKnockbackComponent'
 
-    def __init__(self, knockback):
+    def __init__(self, knockback, duration):
         Component.__init__(self)
 
         self.knockback = knockback
+        self.duration = duration
 
 
 class CollisionDamagingComponent(Component):

@@ -28,10 +28,16 @@ player = Entity([BoundsComponent(Rect(width / 2, height / 2, 64, 64)),
 
 dummy = Entity([
     BoundsComponent(Rect(10, 10, 64, 64)),
+    AnimatedSpriteComponent(load_target_dummy()),
+    CollisionKnockbackComponent(1, 250)
+])
+
+dummy2 = Entity([
+    BoundsComponent(Rect(100, 100, 64, 64)),
     AnimatedSpriteComponent(load_target_dummy())
 ])
 
-entities = [player, dummy]
+entities = [player, dummy, dummy2]
 systems = \
     [
         aging_system,

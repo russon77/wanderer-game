@@ -5,6 +5,8 @@ from pygame.locals import *
 
 
 def relevant_entities(entities, required_components, optional_components=list(), disallowed_components=list()):
+    # todo optional components should be lists of lists of components such that at least one component from each
+    #  sublist is present in the entity
     for item in entities:
         requirements = [comp in item.components for comp in required_components]
         if all(requirements):
@@ -45,7 +47,7 @@ def movement_system(entities, delta_time=0):
 
             # purge any stale movements
             if dyn[2] - delta_time > 0.0:
-                updated_dynamics = (dyn[0], dyn[1], dyn[2] - delta_time)
+                updated_dynamics.append((dyn[0], dyn[1], dyn[2] - delta_time))
 
         # it's not great, but it should work
         mov.dynamic = updated_dynamics
@@ -78,8 +80,36 @@ def collision_system(new, current, entities):
         target_bounds = entity.components[BoundsComponent.name].bounds
         # given the pygame.Rect object 'new' and the pygame.Rect object, check for collision!
         if target_bounds.colliderect(new):
-            print("collision detected!")
-            can_move = False
+            # does the entity have a collision component?
+            # fixme don't allow units to take damage twice or anything
+            solid = entity.components.get(CollisionSolidComponent.name)
+            knockback = entity.components.get(CollisionKnockbackComponent.name)
+            damaging = entity.components.get(CollisionDamagingComponent.name)
+
+            if solid is not None:
+                can_move = False
+
+            if knockback is not None:
+                # add in dynamic movement
+                mov = current.components.get(MovementComponent.name)
+
+                knockback_x, knockback_y = 0, 0
+
+                if target_bounds.x > new.x:
+                    knockback_x = -knockback.knockback
+                elif target_bounds.x < new.x:
+                    knockback_x = knockback.knockback
+                elif target_bounds.y > new.y:
+                    knockback_y = -knockback.knockback
+                elif target_bounds.y < new.y:
+                    knockback_y = knockback.knockback
+
+                mov.add_dynamic(knockback_x, knockback_y, knockback.duration)
+
+            if damaging is not None:
+                # damage the `current` unit
+                # todo this depends on unit health -- not yet implemented
+                pass
 
     return can_move
 
@@ -95,6 +125,14 @@ def input_system(entities, **kwargs):
     """
     for entity in relevant_entities(entities, [InputComponent.name]):
         comp = entity.components[InputComponent.name]
+
+        # special testing action: reset position of player to center of screen
+        pos = entity.components.get(BoundsComponent.name)
+
+        if pos is not None:
+            do_center = comp.keys.get(K_z)
+            if do_center:
+                pos.bounds.x, pos.bounds.y = 320, 320
 
         movement = entity.components.get(MovementComponent.name)
 
