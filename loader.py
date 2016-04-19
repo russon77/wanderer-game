@@ -1,9 +1,11 @@
 import pygame
 import os
 from functools import lru_cache
+from pytmx import *
 
 from constants import *
 from components import *
+from entities import *
 
 
 @lru_cache()
@@ -55,3 +57,25 @@ def load_player_sprites():
     }
 
     return sprites
+
+
+def load_entities_from_tiled_renderer(tr):
+    entities = []
+
+    for layer in tr.tmx_data.visible_layers:
+        if isinstance(layer, TiledObjectGroup):
+            for obj in layer:
+                comps = [
+                    BoundsComponent(Rect(obj.x, obj.y, obj.width, obj.height))
+                ]
+
+                for key in obj.properties.keys():
+                    # pseudo switch statement
+                    if key == 'damage':
+                        comps.append(CollisionDamagingComponent(int(obj.properties[key])))
+                    elif key == 'solid' and obj.properties[key]:
+                        comps.append(CollisionSolidComponent())
+
+                entities.append(Entity(comps))
+
+    return entities

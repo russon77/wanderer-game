@@ -5,7 +5,8 @@ from pygame.locals import *
 from entities import *
 from components import *
 from systems import *
-from loader import load_player_sprites, load_target_dummy
+from loader import load_player_sprites, load_target_dummy, load_entities_from_tiled_renderer
+from graphics import TiledRenderer, UserInterface
 
 pygame.init()
 
@@ -16,6 +17,17 @@ screen = pygame.display.set_mode(size)
 
 fps_clock = pygame.time.Clock()
 
+# load our map(s)
+renderer = TiledRenderer("data/initial_world.tmx")
+
+# get objects from TiledRenderer, convert them to Entities, and add to entities list
+entities = []
+entities.extend(load_entities_from_tiled_renderer(renderer))
+
+# load the ui
+ui = UserInterface()
+
+# load and initialize entities
 sprites = load_player_sprites()
 
 player_input = InputComponent()
@@ -40,7 +52,7 @@ dummy2 = Entity([
     AnimatedSpriteComponent(load_target_dummy())
 ])
 
-entities = [player, dummy, dummy2]
+entities.extend([player, dummy, dummy2])
 systems = \
     [
         aging_system,
@@ -66,10 +78,12 @@ while True:
 
     screen.fill(black)
 
+    renderer.render_map(screen)
+
     for system in systems:
         system(entities, delta_time=delta)
 
     graphics_system(entities, output=screen, delta_time=delta)
 
-    # screen.blit(ball, (player_pos.posx, player_pos.posy))
+    ui.render(screen, player.components[HealthComponent.name])
     pygame.display.flip()

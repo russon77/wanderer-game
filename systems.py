@@ -112,6 +112,7 @@ def collision_system(new, current, entities):
                 if health is not None:
                     health.modify(-damaging.damage)
                     # todo set player state to damaged / invulnerable
+                    print("someone lost health!!")
 
     return can_move
 
