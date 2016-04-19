@@ -74,14 +74,14 @@ while True:
 
     delta = fps_clock.tick(60)
 
-    player_input.keys = key_transitions
+    # player_input.keys = key_transitions
 
     screen.fill(black)
 
     renderer.render_map(screen)
 
     for system in systems:
-        system(entities, delta_time=delta)
+        system(entities, delta_time=delta, key_transitions=key_transitions)
 
     graphics_system(entities, output=screen, delta_time=delta)
 

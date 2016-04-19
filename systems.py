@@ -18,7 +18,7 @@ def relevant_entities(entities, required_components, optional_components=list(),
                     yield item
 
 
-def movement_system(entities, delta_time=0):
+def movement_system(entities, delta_time=0, **kwargs):
     # only want to process entities who have a PositionComponent and either Movement or Acceleration Component
 
     # for now, we aren't worrying about acceleration. that will come later todo or another system
@@ -117,7 +117,7 @@ def collision_system(new, current, entities):
     return can_move
 
 
-def input_system(entities, **kwargs):
+def input_system(entities, key_transitions=None, **kwargs):
     """
     for each entity that has an input component, take the appropriate action by the component's state
 
@@ -126,39 +126,41 @@ def input_system(entities, **kwargs):
     since the input component is cleared after each run through, this can also be used just as effectively with one-off
      inputs like cast-spell or attack
     """
+    if key_transitions is None:
+        return
+
     for entity in relevant_entities(entities, [InputComponent.name]):
-        comp = entity.components[InputComponent.name]
 
         # special testing action: reset position of player to center of screen
         pos = entity.components.get(BoundsComponent.name)
 
         if pos is not None:
-            do_center = comp.keys.get(K_z)
+            do_center = key_transitions.get(K_z)
             if do_center:
                 pos.bounds.x, pos.bounds.y = 320, 320
 
         movement = entity.components.get(MovementComponent.name)
 
         if movement is not None:
-            left = comp.keys.get(K_LEFT)
+            left = key_transitions.get(K_LEFT)
             if left == True:  # add `left` movement
                 movement.add_constant(-PLAYER_MOVE_SPEED, 0)
             elif left == False:  # remove left movement
                 movement.add_constant(PLAYER_MOVE_SPEED, 0)
 
-            right = comp.keys.get(K_RIGHT)
+            right = key_transitions.get(K_RIGHT)
             if right == True:  # add `right` movement
                 movement.add_constant(PLAYER_MOVE_SPEED, 0)
             elif right == False:  # remove right movement
                 movement.add_constant(-PLAYER_MOVE_SPEED, 0)
 
-            up = comp.keys.get(K_UP)
+            up = key_transitions.get(K_UP)
             if up == True:  # add `up` movement
                 movement.add_constant(0, PLAYER_MOVE_SPEED)
             elif up == False:  # remove up movement
                 movement.add_constant(0, -PLAYER_MOVE_SPEED)
 
-            down = comp.keys.get(K_DOWN)
+            down = key_transitions.get(K_DOWN)
             if down == True:  # add `down` movement
                 movement.add_constant(0, -PLAYER_MOVE_SPEED)
             elif down == False:  # remove down movement
@@ -171,7 +173,7 @@ def input_system(entities, **kwargs):
 
         # todo implement attacks other than spin attack
         if attack is not None and direction is not None and position is not None and debuff_cant_attack is None:
-            space = comp.keys.get(K_SPACE)
+            space = key_transitions.get(K_SPACE)
             if space == True:
                 # attack!
                 width, height = attack.ar, attack.ar  # attack radius
@@ -190,12 +192,8 @@ def input_system(entities, **kwargs):
 
                 print("Player attacked!")
 
-        # after processing, remove all keys
-        # todo this may be unnecessary
-        comp.keys = {}
 
-
-def aging_system(entities, delta_time=0):
+def aging_system(entities, delta_time=0, **kwargs):
     # remove stale entities
     to_remove = []
     for entity in relevant_entities(entities, [TimeToLiveComponent.name]):
@@ -243,7 +241,7 @@ def death_system(entities, **kwargs):
 mss_rate = 3
 
 
-def monster_spawn_system(entities, delta_time=0, global_timer=1):
+def monster_spawn_system(entities, delta_time=0, global_timer=1, **kwargs):
     if global_timer % mss_rate == 0:
         # spawn a monster!
         entities.append(
@@ -255,7 +253,7 @@ def monster_spawn_system(entities, delta_time=0, global_timer=1):
         print("Spawned a monster!")
 
 
-def graphics_system(entities, output=None, delta_time=0):
+def graphics_system(entities, output=None, delta_time=0, **kwargs):
     # can't do anything if we don't have a screen to draw to!
     if output is None:
         return
