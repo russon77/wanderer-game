@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" nextobjectid="16">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" nextobjectid="25">
  <tileset firstgid="1" name="mountain_landscape" tilewidth="32" tileheight="32">
   <image source="mountain_landscape.png" width="512" height="512"/>
   <terraintypes>
@@ -10,6 +10,9 @@
   <tile id="117" terrain="0,0,0,0"/>
   <tile id="132" terrain="0,0,0,0"/>
   <tile id="133" terrain="0,0,0,0"/>
+ </tileset>
+ <tileset firstgid="257" name="terrain" tilewidth="32" tileheight="32">
+  <image source="terrain/32x32_terrain_Denzi110115-4.png" width="768" height="1008"/>
  </tileset>
  <layer name="Tile Layer 1" width="20" height="15">
   <data encoding="csv">
@@ -32,24 +35,27 @@
  </layer>
  <layer name="Tile Layer 2" width="20" height="15">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,117,118,0,0,0,0,0,117,118,0,0,0,0,0,0,
-0,0,0,0,0,133,134,0,0,0,0,0,133,134,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,117,118,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,133,134,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,
+432,0,0,0,0,0,0,899,900,901,901,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,899,899,900,901,901,901,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,899,899,900,901,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,899,900,901,0,0,0,899,899,899,899,900,901,432,
+432,0,0,0,0,117,118,899,900,901,0,0,117,118,0,0,0,0,0,432,
+432,0,0,0,0,133,134,899,900,901,0,0,133,134,0,0,0,0,0,432,
+432,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,0,0,117,118,0,0,0,0,0,239,240,0,432,
+432,899,900,901,900,901,901,0,0,133,134,0,0,0,0,0,255,256,0,432,
+432,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,432,
+432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432
 </data>
  </layer>
  <objectgroup name="Object Layer 1">
+  <properties>
+   <property name="solid" value="1"/>
+  </properties>
   <object id="12" name="Hello" x="160" y="192" width="64" height="32">
    <properties>
     <property name="damage" value="1"/>
@@ -63,6 +69,32 @@
   <object id="15" name="Aasdf" x="288" y="352" width="64" height="32">
    <properties>
     <property name="damage" value="1"/>
+   </properties>
+  </object>
+  <object id="16" name="myfriend" x="520" y="351" width="48" height="32">
+   <properties>
+    <property name="input" value="1"/>
+    <property name="solid" value="1"/>
+   </properties>
+  </object>
+  <object id="20" x="3" y="19" width="634" height="10">
+   <properties>
+    <property name="solid" value="1"/>
+   </properties>
+  </object>
+  <object id="21" x="3" y="449" width="634" height="10">
+   <properties>
+    <property name="solid" value="1"/>
+   </properties>
+  </object>
+  <object id="23" x="18" y="22" width="11" height="447">
+   <properties>
+    <property name="solid" value="1"/>
+   </properties>
+  </object>
+  <object id="24" x="611" y="19" width="11" height="447">
+   <properties>
+    <property name="solid" value="1"/>
    </properties>
   </object>
  </objectgroup>

@@ -75,6 +75,8 @@ def load_entities_from_tiled_renderer(tr):
                         comps.append(CollisionDamagingComponent(int(obj.properties[key])))
                     elif key == 'solid' and obj.properties[key]:
                         comps.append(CollisionSolidComponent())
+                    elif key == 'input' and obj.properties[key]:
+                        comps.append(InputComponent())
 
                 entities.append(Entity(comps))
 
