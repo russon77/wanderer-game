@@ -276,3 +276,22 @@ class CollisionDamagingComponent(Component):
         Component.__init__(self)
 
         self.damage = damage
+
+
+class HealthComponent(Component):
+    """
+    simple state component for health as an integer value
+    """
+    name = 'HealthComponent'
+
+    def __init__(self, max_health, initial_health=False):
+        Component.__init__(self)
+        self.max_health = max_health
+        if initial_health:
+            self.current_health = initial_health
+        else:
+            self.current_health = max_health
+
+    def modify(self, amount):
+        # modify health, but do not set health over max_health nor below zero
+        self.current_health = max(min(self.current_health + amount, self.max_health), 0)

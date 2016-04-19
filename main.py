@@ -24,12 +24,15 @@ player = Entity([BoundsComponent(Rect(width / 2, height / 2, 64, 64)),
                  MovementComponent(),
                  AttackComponent(),
                  DirectionComponent(),
-                 AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100)])
+                 AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100),
+                 HealthComponent(100)
+                 ])
 
 dummy = Entity([
     BoundsComponent(Rect(10, 10, 64, 64)),
     AnimatedSpriteComponent(load_target_dummy()),
-    CollisionKnockbackComponent(1, 250)
+    CollisionKnockbackComponent(1, 250),
+    CollisionDamagingComponent(10)
 ])
 
 dummy2 = Entity([

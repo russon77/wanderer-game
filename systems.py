@@ -92,6 +92,7 @@ def collision_system(new, current, entities):
                 # add in dynamic movement
                 mov = current.components.get(MovementComponent.name)
 
+                # todo fix this
                 knockback_x, knockback_y = 0, 0
 
                 if target_bounds.x > new.x:
@@ -107,8 +108,10 @@ def collision_system(new, current, entities):
 
             if damaging is not None:
                 # damage the `current` unit
-                # todo this depends on unit health -- not yet implemented
-                pass
+                health = current.components.get(HealthComponent.name)
+                if health is not None:
+                    health.modify(-damaging.damage)
+                    # todo set player state to damaged / invulnerable
 
     return can_move
 
@@ -212,6 +215,29 @@ def aging_system(entities, delta_time=0):
         for key in to_remove:
             del entity.components[key]
 
+
+def death_system(entities, **kwargs):
+    """
+
+    Args:
+        entities:
+        **kwargs:
+
+    Returns:
+
+    """
+    to_remove = []
+    for entity in relevant_entities(entities, [HealthComponent.name]):
+        health = entity.components[HealthComponent.name].current_health
+
+        if health <= 0:
+            # todo if this entity has a death animation, remove all components except for its Bounds and AnimatedSprite,
+            # and give it a death timer (TTL component) equal to the length of the animation
+
+            # fixme for now, simply eliminate the entity
+            to_remove.append(entity)
+
+    [entities.remove(entity) for entity in to_remove]
 
 mss_rate = 3
 
