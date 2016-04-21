@@ -1,6 +1,7 @@
 from components import *
 from entities import *
 from constants import *
+from helpers import *
 from pygame.locals import *
 
 
@@ -117,7 +118,7 @@ def collision_system(new, current, entities):
     return can_move
 
 
-def input_system(entities, key_transitions=None, **kwargs):
+def input_system(entities, key_transitions=None, world=None, player=None, **kwargs):
     """
     for each entity that has an input component, take the appropriate action by the component's state
 
@@ -191,6 +192,22 @@ def input_system(entities, key_transitions=None, **kwargs):
                     UnableToAttackComponent(PLAYER_ATTACK_ANIMATION_DURATION)
 
                 print("Player attacked!")
+
+        # implement world transitions as a number pressed down
+        if world is not None:
+            key_to_num = {
+                K_1: '1',
+                K_2: '2',
+                K_3: '3'
+            }
+
+            for key in key_to_num:
+                val = key_transitions.get(key)
+                if key_transitions.get(key):
+                    try:
+                        map_transition(world, key_to_num[key], 'x', entities, player)
+                    except Exception:
+                        return
 
 
 def aging_system(entities, delta_time=0, **kwargs):

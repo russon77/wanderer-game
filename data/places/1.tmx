@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" nextobjectid="25">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" nextobjectid="28">
+ <properties>
+  <property name="default" value="1"/>
+  <property name="id" value="1"/>
+  <property name="start_x" value="100"/>
+  <property name="start_y" value="100"/>
+ </properties>
  <tileset firstgid="1" name="mountain_landscape" tilewidth="32" tileheight="32">
-  <image source="mountain_landscape.png" width="512" height="512"/>
+  <image source="../mountain_landscape.png" width="512" height="512"/>
   <terraintypes>
    <terrain name="New Terrain" tile="-1"/>
    <terrain name="New Terrain" tile="-1"/>
@@ -12,7 +18,7 @@
   <tile id="133" terrain="0,0,0,0"/>
  </tileset>
  <tileset firstgid="257" name="terrain" tilewidth="32" tileheight="32">
-  <image source="terrain/32x32_terrain_Denzi110115-4.png" width="768" height="1008"/>
+  <image source="../terrain/32x32_terrain_Denzi110115-4.png" width="768" height="1008"/>
  </tileset>
  <layer name="Tile Layer 1" width="20" height="15">
   <data encoding="csv">
@@ -36,8 +42,8 @@
  <layer name="Tile Layer 2" width="20" height="15">
   <data encoding="csv">
 432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,432,
-432,0,0,0,0,0,0,899,900,901,901,0,0,0,0,0,0,0,0,432,
-432,0,0,0,0,899,899,900,901,901,901,0,0,0,0,0,0,0,0,432,
+432,0,0,0,0,0,0,899,900,901,901,0,0,0,0,0,0,0,0,0,
+432,0,0,0,0,899,899,900,901,901,901,0,0,0,0,0,0,0,0,0,
 432,0,0,0,0,0,0,899,899,900,901,0,0,0,0,0,0,0,0,432,
 432,0,0,0,0,0,0,899,900,901,0,0,0,899,899,899,899,900,901,432,
 432,0,0,0,0,117,118,899,900,901,0,0,117,118,0,0,0,0,0,432,
@@ -92,9 +98,15 @@
     <property name="solid" value="1"/>
    </properties>
   </object>
-  <object id="24" x="611" y="19" width="11" height="447">
+  <object id="25" x="611" y="97" width="24" height="364">
    <properties>
     <property name="solid" value="1"/>
+   </properties>
+  </object>
+  <object id="26" name="trans" x="611" y="39" width="22" height="51">
+   <properties>
+    <property name="transition" value="2"/>
+    <property name="ttype" value="x"/>
    </properties>
   </object>
  </objectgroup>

@@ -5,8 +5,8 @@ from pygame.locals import *
 from entities import *
 from components import *
 from systems import *
-from loader import load_player_sprites, load_target_dummy, load_entities_from_tiled_renderer
-from graphics import TiledRenderer, UserInterface
+from loader import *
+from graphics import *
 
 pygame.init()
 
@@ -18,11 +18,11 @@ screen = pygame.display.set_mode(size)
 fps_clock = pygame.time.Clock()
 
 # load our map(s)
-renderer = TiledRenderer("data/initial_world.tmx")
+world = load_map_files()
 
 # get objects from TiledRenderer, convert them to Entities, and add to entities list
 entities = []
-entities.extend(load_entities_from_tiled_renderer(renderer))
+entities.extend(load_entities_from_tiled_renderer(world['default']))
 
 # load the ui
 ui = UserInterface()
@@ -74,14 +74,12 @@ while True:
 
     delta = fps_clock.tick(60)
 
-    # player_input.keys = key_transitions
-
     screen.fill(black)
 
-    renderer.render_map(screen)
+    world['default'].render_map(screen)
 
     for system in systems:
-        system(entities, delta_time=delta, key_transitions=key_transitions)
+        system(entities, delta_time=delta, key_transitions=key_transitions, world=world, player=player)
 
     graphics_system(entities, output=screen, delta_time=delta)
 

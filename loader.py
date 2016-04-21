@@ -1,11 +1,13 @@
 import pygame
 import os
+from glob import glob
 from functools import lru_cache
 from pytmx import *
 
 from constants import *
 from components import *
 from entities import *
+from graphics import *
 
 
 @lru_cache()
@@ -81,3 +83,16 @@ def load_entities_from_tiled_renderer(tr):
                 entities.append(Entity(comps))
 
     return entities
+
+
+def load_map_files():
+    res = {}
+
+    for file in glob(os.path.join('./', 'data/places/*')):
+        tr = TiledRenderer(file)
+        res[tr.tmx_data.properties['id']] = tr
+
+        if tr.tmx_data.properties.get('default'):
+            res['default'] = tr
+
+    return res
