@@ -5,6 +5,8 @@ from pygame.locals import *
 from pytmx import *
 from pytmx.util_pygame import load_pygame
 
+from components import *
+
 """
 copied from https://github.com/bitcraft/PyTMX
 thanks to bitcraft!! <3
@@ -108,7 +110,8 @@ class UserInterface(object):
 
         self.empty_bar = pygame.image.load(os.path.join('./', "data/ui/empty_bar.png")).convert_alpha()
 
-    def render(self, surface, health_comp):
+    def render(self, surface, player):
+        health_comp = player.components[HealthComponent.name]
         # first draw the empty bar fully onto the screen. then draw a percentage of the full bar on top of it
         surface.blit(self.empty_bar, (10, 10))
 

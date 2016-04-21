@@ -85,5 +85,5 @@ while True:
 
     graphics_system(entities, output=screen, delta_time=delta)
 
-    ui.render(screen, player.components[HealthComponent.name])
+    ui.render(screen, player)
     pygame.display.flip()
