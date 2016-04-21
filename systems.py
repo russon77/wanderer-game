@@ -19,7 +19,7 @@ def relevant_entities(entities, required_components, optional_components=list(),
                     yield item
 
 
-def movement_system(entities, delta_time=0, **kwargs):
+def movement_system(entities, delta_time=0, world=None, player=None, **kwargs):
     # only want to process entities who have a PositionComponent and either Movement or Acceleration Component
 
     # for now, we aren't worrying about acceleration. that will come later todo or another system
@@ -55,12 +55,15 @@ def movement_system(entities, delta_time=0, **kwargs):
         # move will return a new Rect but not mutate the existing one
         new_pos = pos.bounds.move(delta_x * delta_time, delta_y * delta_time)
 
-        if collision_system(new_pos, entity, entities):
-            # finally, move the entity
-            pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
+        try:
+            if collision_system(new_pos, entity, entities, world=world, player=player):
+                # finally, move the entity
+                pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
+        except:
+            return
 
 
-def collision_system(new, current, entities):
+def collision_system(new, current, entities, world, player):
     """
     collision system will be called by the movement system with the new position of one entity to compute against
     the other entities with a position and bounds component
@@ -85,6 +88,7 @@ def collision_system(new, current, entities):
             solid = entity.components.get(CollisionSolidComponent.name)
             knockback = entity.components.get(CollisionKnockbackComponent.name)
             damaging = entity.components.get(CollisionDamagingComponent.name)
+            transition = entity.components.get(CollisionTransitionComponent.name)
 
             if solid is not None:
                 can_move = False
@@ -114,6 +118,10 @@ def collision_system(new, current, entities):
                     health.modify(-damaging.damage)
                     # todo set player state to damaged / invulnerable
                     print("someone lost health!!")
+
+            if transition is not None:
+                # cause a transition to the next map
+                map_transition(world, transition.target, transition.ttype, entities, player)
 
     return can_move
 

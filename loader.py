@@ -79,6 +79,10 @@ def load_entities_from_tiled_renderer(tr):
                         comps.append(CollisionSolidComponent())
                     elif key == 'input' and obj.properties[key]:
                         comps.append(InputComponent())
+                    elif key == 'transition':
+                        ttype = obj.properties.get('ttype')
+                        if ttype is not None:
+                            comps.append(CollisionTransitionComponent(obj.properties[key], ttype))
 
                 entities.append(Entity(comps))
 

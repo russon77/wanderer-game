@@ -278,6 +278,19 @@ class CollisionDamagingComponent(Component):
         self.damage = damage
 
 
+class CollisionTransitionComponent(Component):
+    """
+    colliding with this component will cause a transition to the map with the set id
+    """
+    name = 'CollisionTransitionComponent'
+
+    def __init__(self, target, ttype):
+        Component.__init__(self)
+
+        self.target = target
+        self.ttype = ttype
+
+
 class HealthComponent(Component):
     """
     simple state component for health as an integer value
