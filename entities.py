@@ -23,3 +23,18 @@ def PlayerEntity(initial_position):
             HealthComponent(100)
         ]
     )
+
+
+def DummyEntity(initial_position, damage=False, knockback=False):
+    comps = [
+        AnimatedSpriteComponent(loader.load_target_dummy()),
+        BoundsComponent(Rect(initial_position, (64, 64))),
+    ]
+
+    if damage:
+        comps.append(CollisionDamagingComponent(damage))
+
+    if knockback:
+        comps.append(CollisionKnockbackComponent(*knockback))
+
+    return Entity(comps)

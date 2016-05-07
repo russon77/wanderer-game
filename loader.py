@@ -3,6 +3,7 @@ import os
 from glob import glob
 from functools import lru_cache
 from pytmx import *
+from ast import literal_eval
 
 from constants import *
 from components import *
@@ -67,6 +68,27 @@ def load_entities_from_tiled_renderer(tr):
     for layer in tr.tmx_data.visible_layers:
         if isinstance(layer, TiledObjectGroup):
             for obj in layer:
+
+                # check if object is a pre-defined type
+                obj_type = obj.properties.get('obj_type')
+                if obj_type is not None:
+                    if obj_type == 'dummy':
+                        # check for dummy options: damage, knockback
+                        # this fancy auto-loader only works for components that require a single value
+                        extra = {
+                            'damage': False,
+                            'knockback': False
+                        }
+
+                        for key in extra:
+                            val = obj.properties.get(key)
+                            if val is not None:
+                                extra[key] = literal_eval(val)
+
+                        entities.append(entities_mod.DummyEntity((obj.x, obj.y), **extra))
+                    continue
+
+                # otherwise, create the custom Entity according to its properties
                 comps = []
 
                 comps.append(BoundsComponent(Rect(obj.x, obj.y, obj.width, obj.height)))

@@ -30,21 +30,9 @@ ui = UserInterface()
 # load and initialize entities
 sprites = load_player_sprites()
 
-player = PlayerEntity((80, 80))
+player = PlayerEntity((80, 160))
 
-dummy = Entity([
-    BoundsComponent(Rect(10, 10, 64, 64)),
-    AnimatedSpriteComponent(load_target_dummy()),
-    CollisionKnockbackComponent(1, 250),
-    CollisionDamagingComponent(10)
-])
-
-dummy2 = Entity([
-    BoundsComponent(Rect(100, 100, 64, 64)),
-    AnimatedSpriteComponent(load_target_dummy())
-])
-
-entities.extend([player, dummy, dummy2])
+entities.extend([player])
 systems = \
     [
         aging_system,
