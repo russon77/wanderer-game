@@ -30,7 +30,8 @@ ui = UserInterface()
 # load and initialize entities
 sprites = load_player_sprites()
 
-player = PlayerEntity((80, 160))
+# initialize the player
+player = PlayerEntity((40, 360))
 
 entities.extend([player])
 systems = \

@@ -34,6 +34,70 @@ def load_sprite_file(name, num):
     return sprites
 
 
+def load_multi_row_sprite_file(name, sprite_size, indices, sprites_per_row=None):
+    """
+    this will take a sprite sheet with m by n sprites, where number of sprites per row is the same for every row
+    Args:
+        name: name of file to access
+        sprite_size: tuple of (width, height) representing size of individual sprite
+        indices: array of hashable values to index the result sprite rows (in order)
+
+    Returns:
+
+    """
+    sheet = pygame.image.load(os.path.join('./', name)).convert_alpha()
+
+    bounds = sheet.get_rect()
+
+    sprite_width, sprite_height = sprite_size
+
+    if sprites_per_row is None:
+        sprites_per_row = int(bounds.width / sprite_width)
+
+    num_rows = len(indices)
+
+    sprite_dict = {}
+
+    for row in range(0, num_rows):
+        sprites = []
+
+        for i in range(0, sprites_per_row):
+
+            src_x = i * sprite_width
+            src_y = row * sprite_height
+
+            surf = pygame.Surface((sprite_width, sprite_height), pygame.SRCALPHA, 32)
+            surf.blit(sheet, (0, 0), (src_x, src_y, sprite_width, sprite_height))
+
+            sprites.append(surf)
+
+        sprite_dict[ indices[row] ] = sprites
+
+    return sprite_dict
+
+
+def load_cobra_sprites():
+    keys = [
+        STATE_MOVING_NORTH,
+        STATE_MOVING_EAST,
+        STATE_MOVING_SOUTH,
+        STATE_MOVING_WEST
+    ]
+
+    sprites = load_multi_row_sprite_file("data/cobra/king_cobra.png", (96, 96), keys)
+
+    more_keys = [
+        STATE_STANDING_STILL_NORTH,
+        STATE_STANDING_STILL_EAST,
+        STATE_STANDING_STILL_SOUTH,
+        STATE_STANDING_STILL_WEST
+    ]
+
+    more_sprites = load_multi_row_sprite_file("data/cobra/king_cobra.png", (96, 96), more_keys, 1)
+
+    return {**sprites, **more_sprites}
+
+
 def load_target_dummy():
     return {
         STATE_STANDING_STILL: load_sprite_file("data/target_dummy/combat_dummy.png", 8)
@@ -86,6 +150,9 @@ def load_entities_from_tiled_renderer(tr):
                                 extra[key] = literal_eval(val)
 
                         entities.append(entities_mod.DummyEntity((obj.x, obj.y), **extra))
+                    elif obj_type == 'cobra':
+                        entities.append(entities_mod.CobraEntity((obj.x, obj.y)))
+
                     continue
 
                 # otherwise, create the custom Entity according to its properties

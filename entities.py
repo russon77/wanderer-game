@@ -38,3 +38,15 @@ def DummyEntity(initial_position, damage=False, knockback=False):
         comps.append(CollisionKnockbackComponent(*knockback))
 
     return Entity(comps)
+
+
+def CobraEntity(initial_position):
+    return Entity(
+        [
+            AnimatedSpriteComponent(loader.load_cobra_sprites(), STATE_STANDING_STILL_SOUTH, 150),
+            BoundsComponent(Rect(initial_position, (96, 96))),
+            MovementComponent(),
+            DirectionComponent(),
+            HealthComponent(100)
+        ]
+    )
