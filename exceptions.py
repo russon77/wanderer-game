@@ -1,0 +1,4 @@
+
+
+class MapChangeException(Exception):
+    pass

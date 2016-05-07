@@ -284,11 +284,12 @@ class CollisionTransitionComponent(Component):
     """
     name = 'CollisionTransitionComponent'
 
-    def __init__(self, target, ttype):
+    def __init__(self, target, target_x, target_y):
         Component.__init__(self)
 
         self.target = target
-        self.ttype = ttype
+        self.target_x = target_x
+        self.target_y = target_y
 
 
 class HealthComponent(Component):

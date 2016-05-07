@@ -1,8 +1,9 @@
 from loader import load_entities_from_tiled_renderer
 from components import *
+from exceptions import MapChangeException
 
 
-def map_transition(world, key, ttype, entities, player):
+def map_transition(world, key, target_x, target_y, entities, player):
     """
     set 'default' key of world dict to next map
 
@@ -22,11 +23,9 @@ def map_transition(world, key, ttype, entities, player):
     # todo set the player location according to how he entered the room
     loc = player.components.get(BoundsComponent.name)
     if loc is not None:
-        if ttype == 'x':
-            loc.bounds.x = world['default'].pixel_size[0] - loc.bounds.x - loc.bounds.width
-        elif ttype == 'y':
-            loc.bounds.y = world['default'].pixel_size[1] - loc.bounds.y - loc.bounds.height
+        loc.bounds.x = target_x
+        loc.bounds.y = target_y
 
-    raise Exception
+    raise MapChangeException
 
 

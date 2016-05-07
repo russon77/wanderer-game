@@ -30,15 +30,7 @@ ui = UserInterface()
 # load and initialize entities
 sprites = load_player_sprites()
 
-player_input = InputComponent()
-player = Entity([BoundsComponent(Rect(width / 2, height / 2, 64, 64)),
-                 player_input,
-                 MovementComponent(),
-                 AttackComponent(),
-                 DirectionComponent(),
-                 AnimatedSpriteComponent(sprites, STATE_MOVING_EAST, 100),
-                 HealthComponent(100)
-                 ])
+player = PlayerEntity((80, 80))
 
 dummy = Entity([
     BoundsComponent(Rect(10, 10, 64, 64)),
@@ -78,8 +70,13 @@ while True:
 
     world['default'].render_map(screen)
 
-    for system in systems:
-        system(entities, delta_time=delta, key_transitions=key_transitions, world=world, player=player)
+    try:
+        for system in systems:
+            system(entities, delta_time=delta, key_transitions=key_transitions, world=world, player=player)
+    except MapChangeException:
+        # in case of the map change, we do not want to continue processing -- we can do that after the world has been
+        #  changed
+        pass
 
     graphics_system(entities, output=screen, delta_time=delta)
 

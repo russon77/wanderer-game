@@ -59,7 +59,7 @@ def movement_system(entities, delta_time=0, world=None, player=None, **kwargs):
             if collision_system(new_pos, entity, entities, world=world, player=player):
                 # finally, move the entity
                 pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
-        except:
+        except MapChangeException:
             return
 
 
@@ -121,7 +121,7 @@ def collision_system(new, current, entities, world, player):
 
             if transition is not None:
                 # cause a transition to the next map
-                map_transition(world, transition.target, transition.ttype, entities, player)
+                map_transition(world, transition.target, transition.target_x, transition.target_y, entities, player)
 
     return can_move
 

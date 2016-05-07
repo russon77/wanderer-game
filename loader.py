@@ -6,7 +6,7 @@ from pytmx import *
 
 from constants import *
 from components import *
-from entities import *
+import entities as entities_mod
 from graphics import *
 
 
@@ -67,9 +67,9 @@ def load_entities_from_tiled_renderer(tr):
     for layer in tr.tmx_data.visible_layers:
         if isinstance(layer, TiledObjectGroup):
             for obj in layer:
-                comps = [
-                    BoundsComponent(Rect(obj.x, obj.y, obj.width, obj.height))
-                ]
+                comps = []
+
+                comps.append(BoundsComponent(Rect(obj.x, obj.y, obj.width, obj.height)))
 
                 for key in obj.properties.keys():
                     # pseudo switch statement
@@ -80,11 +80,12 @@ def load_entities_from_tiled_renderer(tr):
                     elif key == 'input' and obj.properties[key]:
                         comps.append(InputComponent())
                     elif key == 'transition':
-                        ttype = obj.properties.get('ttype')
-                        if ttype is not None:
-                            comps.append(CollisionTransitionComponent(obj.properties[key], ttype))
+                        target_x = obj.properties.get('target_x')
+                        target_y = obj.properties.get('target_y')
+                        if target_x is not None and target_y is not None:
+                            comps.append(CollisionTransitionComponent(obj.properties[key], int(target_x), int(target_y)))
 
-                entities.append(Entity(comps))
+                entities.append(entities_mod.Entity(comps))
 
     return entities
 
