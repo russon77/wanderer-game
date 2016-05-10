@@ -100,7 +100,8 @@ def collision_system(new, current, entities, world, player):
             knockback = entity.components.get(CollisionKnockbackComponent.name)
             damaging = entity.components.get(CollisionDamagingComponent.name)
             transition = entity.components.get(CollisionTransitionComponent.name)
-            invuln = entity.components.get(InvulnerableComponent.name)
+
+            invuln = current.components.get(InvulnerableComponent.name)
 
             if solid is not None:
                 can_move = False
@@ -129,7 +130,7 @@ def collision_system(new, current, entities, world, player):
                 if health is not None:
                     health.modify(-damaging.damage)
                     # todo set player state to damaged / invulnerable
-                    entity.components[InvulnerableComponent.name] = \
+                    current.components[InvulnerableComponent.name] = \
                         InvulnerableComponent(INVULNERABLE_AFTER_DAMAGE_TIMER)
 
             if transition is not None:

@@ -113,6 +113,8 @@ class UserInterface(object):
 
         self.game_over = pygame.image.load(os.path.join('./', "data/ui/game_over.png")).convert_alpha()
 
+        self.invuln = pygame.image.load(os.path.join('./', "data/ui/invuln.png")).convert_alpha()
+
     def render(self, surface, player):
         health_comp = player.components[HealthComponent.name]
         # first draw the empty bar fully onto the screen. then draw a percentage of the full bar on top of it
@@ -126,3 +128,7 @@ class UserInterface(object):
 
         if health_comp.current_health <= 0:
             surface.blit(self.game_over, (0, 0))
+
+        invuln = player.components.get(InvulnerableComponent.name)
+        if invuln is not None:
+            surface.blit(self.invuln, (0, 0))
