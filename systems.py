@@ -56,12 +56,12 @@ def movement_system(entities, delta_time=0, world=None, player=None, **kwargs):
         # move will return a new Rect but not mutate the existing one
         new_pos = pos.bounds.move(delta_x * delta_time, delta_y * delta_time)
 
-        try:
-            if collision_system(new_pos, entity, entities, world=world, player=player):
-                # finally, move the entity
-                pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
-        except MapChangeException:
-            return
+        # try:
+        if collision_system(new_pos, entity, entities, world=world, player=player):
+            # finally, move the entity
+            pos.bounds.move_ip(delta_x * delta_time, delta_y * delta_time)
+        # except MapChangeException:
+        #     raise MapChangeException
 
 
 def collision_system(new, current, entities, world, player):
@@ -80,6 +80,16 @@ def collision_system(new, current, entities, world, player):
         # do not process an entity's collision with itself
         if entity is current:
             continue
+
+        # check if this entity is on the current's ignore list
+        ignore_list = entity.components.get(CollisionIgnoreComponent.name)
+        if ignore_list is not None:
+            cont = False
+            for ignored in ignore_list.ignore_list:
+                if ignored is current:
+                    cont = True
+            if cont:
+                continue
 
         target_bounds = entity.components[BoundsComponent.name].bounds
         # given the pygame.Rect object 'new' and the pygame.Rect object, check for collision!
@@ -186,10 +196,7 @@ def input_system(entities, key_transitions=None, world=None, player=None, **kwar
             space = key_transitions.get(K_SPACE)
             if space == True:
                 # attack!
-                width, height = attack.ar, attack.ar  # attack radius
-                posx, posy = (position.bounds.x - width) / 2, (position.bounds.y - height) / 2
-                attack_bounds = Rect(posx, posy, width, height)
-                # todo make attacks a real thing
+                entities.append(AttackEntity(entity))
 
                 animation = entity.components.get(AnimatedSpriteComponent.name)
                 if animation is not None:

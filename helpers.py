@@ -27,5 +27,3 @@ def map_transition(world, key, target_x, target_y, entities, player):
         loc.bounds.y = target_y
 
     raise MapChangeException
-
-

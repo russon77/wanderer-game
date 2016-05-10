@@ -36,6 +36,7 @@ player = PlayerEntity((40, 360))
 entities.extend([player])
 systems = \
     [
+        death_system,
         aging_system,
         input_system,
         automation_system,

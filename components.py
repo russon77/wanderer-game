@@ -304,6 +304,18 @@ class CollisionTransitionComponent(Component):
         self.target_y = target_y
 
 
+class CollisionIgnoreComponent(Component):
+    """
+    contains a list of entities to ignore when calculating collisions
+    """
+    name = 'CollisionIgnoreComponent'
+
+    def __init__(self, ignore_list):
+        Component.__init__(self)
+
+        self.ignore_list = ignore_list
+
+
 class HealthComponent(Component):
     """
     simple state component for health as an integer value
