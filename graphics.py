@@ -6,6 +6,7 @@ from pytmx import *
 from pytmx.util_pygame import load_pygame
 
 from components import *
+from exceptions import *
 
 """
 copied from https://github.com/bitcraft/PyTMX
@@ -105,6 +106,9 @@ class UserInterface(object):
 
     should be extended to accept events or something, i.e. for the screen to flash red when player takes damage.
     """
+
+    game_over_length = 500
+
     def __init__(self):
         # load user interface images
         self.full_bar = pygame.image.load(os.path.join('./', "data/ui/full_bar.png")).convert_alpha()
@@ -114,6 +118,8 @@ class UserInterface(object):
         self.game_over = pygame.image.load(os.path.join('./', "data/ui/game_over.png")).convert_alpha()
 
         self.invuln = pygame.image.load(os.path.join('./', "data/ui/invuln.png")).convert_alpha()
+
+        self.time_to_show_game_over = 0
 
     def render(self, surface, player):
         health_comp = player.components[HealthComponent.name]
@@ -128,6 +134,10 @@ class UserInterface(object):
 
         if health_comp.current_health <= 0:
             surface.blit(self.game_over, (0, 0))
+            self.time_to_show_game_over += 1
+
+            if self.time_to_show_game_over > self.game_over_length:
+                raise GameOverException
 
         invuln = player.components.get(InvulnerableComponent.name)
         if invuln is not None:

@@ -86,8 +86,8 @@
   </object>
   <object id="26" name="trans" x="574" y="39" width="59" height="52">
    <properties>
-    <property name="target_x" value="80"/>
-    <property name="target_y" value="160"/>
+    <property name="target_x" value="500"/>
+    <property name="target_y" value="80"/>
     <property name="transition" value="2"/>
    </properties>
   </object>
