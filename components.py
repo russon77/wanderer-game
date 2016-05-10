@@ -12,6 +12,15 @@ class Component(object):
         pass
 
 
+class PlayerComponent(Component):
+    """
+    base component to indicate that this is a player
+
+    mainly for use in the automation system for bots to interact with player
+    """
+    name = 'PlayerComponent'
+
+
 class MovementComponent(Component):
     """
     represents movement. when combined with a Bounds component, the Entity will move according to its
@@ -40,6 +49,9 @@ class MovementComponent(Component):
 
     def add_dynamic(self, velx, vely, ttl):
         self.dynamic.append((velx, vely, ttl))
+
+    def reset_constant(self):
+        self.velx = self.vely = 0
 
 
 class DirectionComponent(Component):
@@ -309,3 +321,39 @@ class HealthComponent(Component):
     def modify(self, amount):
         # modify health, but do not set health over max_health nor below zero
         self.current_health = max(min(self.current_health + amount, self.max_health), 0)
+
+
+# personality enumeration
+PERSONALITY_FLEE = 0
+PERSONALITY_AGGRESSIVE = 1
+# PERSONALITY_RANGED = 2
+
+
+class AutomatonComponent(Component):
+    """
+    holds the personality type for this entity
+
+    allows processing by the automation system
+    """
+    name = 'AutomatonComponent'
+
+    def __init__(self, personality):
+        Component.__init__(self)
+        self.personality = personality
+
+
+ATTRIBUTES_MOVE_SPEED = 0
+ATTRIBUTES_AGGRO_RANGE = 1
+ATTRIBUTES_ATTACK_RANGE = 2
+
+
+# todo consider whether this is proper ECS or not...
+class AttributesComponent(Component):
+    """
+    dictionary that holds various values for a given entity
+    """
+    name = 'AttributesComponent'
+
+    def __init__(self, dictionary):
+        Component.__init__(self)
+        self.vals = dictionary

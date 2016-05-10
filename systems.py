@@ -3,6 +3,7 @@ from entities import *
 from constants import *
 from helpers import *
 from pygame.locals import *
+from math import sqrt
 
 
 def relevant_entities(entities, required_components, optional_components=list(), disallowed_components=list()):
@@ -333,3 +334,79 @@ def direction_movement_animation_system(entities, **kwargs):
             ani.set_state(STATE_MOVING + dire.direction, reset_index_on_duplicate=False)
         else:
             ani.set_state(STATE_STANDING_STILL + dire.direction, reset_index_on_duplicate=False)
+
+
+# todo implement change to flee personality here thru use of percent max health remaining on Entity
+def automation_system(entities, **kwargs):
+    for entity in relevant_entities(entities, [AutomatonComponent.name]):
+        # get relevant components of our automaton Entity
+        personality = entity.components[AutomatonComponent.name].personality
+        mov = entity.components.get(MovementComponent.name)
+        pos = entity.components.get(BoundsComponent.name)
+        attributes = entity.components.get(AttributesComponent.name)
+
+        # get components of the player entity
+        # todo find closest enemy -- this isnt a great solution
+        player = None
+        for ent2 in relevant_entities(entities, [PlayerComponent.name]):
+            player = ent2
+
+        # in case something strange happens and there's no player available to act against,
+        # we do not need to continue processing the system at all
+        if player is None:
+            return
+
+        pos_player = player.components.get(BoundsComponent.name)
+
+        # check if player is within aggro range. if not, continue loop
+        aggro_range = attributes.vals.get(ATTRIBUTES_AGGRO_RANGE)
+        move_speed = attributes.vals.get(ATTRIBUTES_MOVE_SPEED)
+
+        if aggro_range is None:
+            continue
+
+        dist = sqrt(
+            pow(pos_player.bounds.centerx - pos.bounds.centerx, 2) +
+            pow(pos_player.bounds.centery - pos.bounds.centery, 2))
+
+        if dist < aggro_range:
+
+            if personality == PERSONALITY_FLEE:
+                # run away from enemy
+                delta_x = abs(pos.bounds.x - pos_player.bounds.x)
+                delta_y = abs(pos.bounds.y - pos_player.bounds.y)
+
+                velx = max(move_speed / delta_x, move_speed)
+                vely = max(move_speed / delta_y, move_speed)
+
+                mov.reset_constant()
+
+                mov.add_constant(velx, vely)
+
+            elif personality == PERSONALITY_AGGRESSIVE:
+                # if enemy is within attacking range
+                attack_range = attributes.vals.get(ATTRIBUTES_ATTACK_RANGE)
+                if attack_range and attack_range < dist:
+                    pass
+                    # if we are on attack cooldown: move away from enemy slowly
+
+                    # else: perform an attack
+
+                # else: move towards enemy
+                delta_x = pos.bounds.centerx - pos_player.bounds.centerx
+                delta_y = pos.bounds.centery - pos_player.bounds.centery
+
+                if abs(delta_x) < 0.001:
+                    velx = 0.0
+                else:
+                    velx = -(delta_x / abs(delta_x)) * move_speed
+
+                if abs(delta_y) < 0.001:
+                    vely = 0.0
+                else:
+                    vely = (delta_y / abs(delta_y)) * move_speed
+
+                mov.reset_constant()
+
+                mov.add_constant(velx, vely)
+

@@ -20,7 +20,8 @@ def PlayerEntity(initial_position):
             MovementComponent(),
             AttackComponent(),
             DirectionComponent(),
-            HealthComponent(100)
+            HealthComponent(100),
+            PlayerComponent()
         ]
     )
 
@@ -47,6 +48,13 @@ def CobraEntity(initial_position):
             BoundsComponent(Rect(initial_position, (96, 96))),
             MovementComponent(),
             DirectionComponent(),
-            HealthComponent(100)
+            HealthComponent(100),
+            AutomatonComponent(PERSONALITY_AGGRESSIVE),
+            AttributesComponent({
+                ATTRIBUTES_AGGRO_RANGE: 200,
+                ATTRIBUTES_ATTACK_RANGE: 50,
+                ATTRIBUTES_MOVE_SPEED: 0.09
+            }),
+            CollisionKnockbackComponent(0.3, 10)
         ]
     )

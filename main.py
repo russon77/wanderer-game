@@ -38,6 +38,7 @@ systems = \
     [
         aging_system,
         input_system,
+        automation_system,
         direction_system,
         direction_movement_animation_system,
         movement_system,

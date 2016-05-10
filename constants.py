@@ -2,6 +2,8 @@ from components import *
 
 PLAYER_MOVE_SPEED = 0.2
 
+ENEMY_MOVE_SPEED = 0.15
+
 PLAYER_ATTACK_ANIMATION_DURATION = 500
 
 STATE_MOVING = 'moving'
