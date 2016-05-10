@@ -373,11 +373,18 @@ def automation_system(entities, **kwargs):
 
             if personality == PERSONALITY_FLEE:
                 # run away from enemy
-                delta_x = abs(pos.bounds.x - pos_player.bounds.x)
-                delta_y = abs(pos.bounds.y - pos_player.bounds.y)
+                delta_x = pos.bounds.centerx - pos_player.bounds.centerx
+                delta_y = pos.bounds.centery - pos_player.bounds.centery
 
-                velx = max(move_speed / delta_x, move_speed)
-                vely = max(move_speed / delta_y, move_speed)
+                if abs(delta_x) < 0.001:
+                    velx = 0.0
+                else:
+                    velx = (delta_x / abs(delta_x)) * move_speed
+
+                if abs(delta_y) < 0.001:
+                    vely = 0.0
+                else:
+                    vely = -(delta_y / abs(delta_y)) * move_speed
 
                 mov.reset_constant()
 
@@ -410,3 +417,7 @@ def automation_system(entities, **kwargs):
 
                 mov.add_constant(velx, vely)
 
+        else:
+            # for now, just reset movement
+            # todo enemies could patrol or pace around rooms
+            mov.reset_constant()
