@@ -46,7 +46,8 @@ class TiledRenderer(object):
                 self.render_tile_layer(surface, layer)
 
             elif isinstance(layer, TiledObjectGroup):
-                self.render_object_layer(surface, layer)
+                # self.render_object_layer(surface, layer)
+                pass
 
             elif isinstance(layer, TiledImageLayer):
                 self.render_image_layer(surface, layer)
@@ -110,6 +111,8 @@ class UserInterface(object):
 
         self.empty_bar = pygame.image.load(os.path.join('./', "data/ui/empty_bar.png")).convert_alpha()
 
+        self.game_over = pygame.image.load(os.path.join('./', "data/ui/game_over.png")).convert_alpha()
+
     def render(self, surface, player):
         health_comp = player.components[HealthComponent.name]
         # first draw the empty bar fully onto the screen. then draw a percentage of the full bar on top of it
@@ -120,3 +123,6 @@ class UserInterface(object):
         w *= health_comp.current_health / health_comp.max_health
 
         surface.blit(self.full_bar, (10, 10), (0, 0, w, h))
+
+        if health_comp.current_health <= 0:
+            surface.blit(self.game_over, (0, 0))

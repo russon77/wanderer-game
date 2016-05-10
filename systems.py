@@ -401,10 +401,12 @@ def automation_system(entities, **kwargs):
                 # if enemy is within attacking range
                 attack_range = attributes.vals.get(ATTRIBUTES_ATTACK_RANGE)
                 if attack_range and attack_range < dist:
-                    pass
-                    # if we are on attack cooldown: move away from enemy slowly
+                    attack = entity.components.get(AttackComponent.name)
+                    if attack is not None:
+                        pass
+                        # if we are on attack cooldown: move away from enemy slowly
 
-                    # else: perform an attack
+                        # else: perform an attack
 
                 # else: move towards enemy
                 delta_x = pos.bounds.centerx - pos_player.bounds.centerx

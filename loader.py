@@ -76,6 +76,11 @@ def load_multi_row_sprite_file(name, sprite_size, indices, sprites_per_row=None)
     return sprite_dict
 
 
+def load_attack_sprite(atype):
+
+    return pygame.image.load(os.path.join('./', 'data/attack_animations/attack_' + atype + '.png')).convert_alpha()
+
+
 def load_cobra_sprites():
     keys = [
         STATE_MOVING_NORTH,

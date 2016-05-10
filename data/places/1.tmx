@@ -89,7 +89,6 @@
     <property name="target_x" value="80"/>
     <property name="target_y" value="160"/>
     <property name="transition" value="2"/>
-    <property name="ttype" value="x"/>
    </properties>
   </object>
   <object id="28" x="101" y="102" width="505" height="20">

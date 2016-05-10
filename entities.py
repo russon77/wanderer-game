@@ -48,7 +48,7 @@ def CobraEntity(initial_position):
             BoundsComponent(Rect(initial_position, (96, 96))),
             MovementComponent(),
             DirectionComponent(),
-            HealthComponent(1),
+            HealthComponent(100),
             AutomatonComponent(PERSONALITY_AGGRESSIVE),
             AttributesComponent({
                 ATTRIBUTES_AGGRO_RANGE: 200,
@@ -66,42 +66,48 @@ def AttackEntity(attacker):
     pos = attacker.components.get(BoundsComponent.name)
 
     abounds = Rect(0, 0, 0, 0)
+    atype = 'horizontal'
 
     if direction is not None:
         if direction.direction == DirectionComponent.East:
+            abounds.width = pos.bounds.width
+            abounds.height = abounds.width / 2
+
             abounds.centery = pos.bounds.centery
             abounds.centerx = pos.bounds.right
 
+        elif direction.direction == DirectionComponent.West:
             abounds.width = pos.bounds.width
             abounds.height = abounds.width / 2
 
-        elif direction.direction == DirectionComponent.West:
             abounds.centery = pos.bounds.centery
             abounds.centerx = pos.bounds.left
 
-            abounds.width = pos.bounds.width
-            abounds.height = abounds.width / 2
-
         elif direction.direction == DirectionComponent.North:
-            abounds.centerx = pos.bounds.centerx
+            abounds.height = pos.bounds.height
+            abounds.width = abounds.height / 2
+
+            abounds.centerx = pos.bounds.x + pos.bounds.width / 2
             abounds.centery = pos.bounds.top
 
+            atype = 'vertical'
+
+        elif direction.direction == DirectionComponent.South:
             abounds.height = pos.bounds.height
             abounds.width = abounds.height / 2
 
-        elif direction.direction == DirectionComponent.North:
-            abounds.centerx = pos.bounds.centerx
+            abounds.centerx = pos.bounds.x + pos.bounds.width / 2
             abounds.centery = pos.bounds.bottom
 
-            abounds.height = pos.bounds.height
-            abounds.width = abounds.height / 2
+            atype = 'vertical'
 
         return Entity(
             [
                 BoundsComponent(abounds),
                 CollisionDamagingComponent(10),
                 CollisionKnockbackComponent(0.5, 100),
-                TimeToLiveComponent(5),
-                CollisionIgnoreComponent([attacker])
+                TimeToLiveComponent(100),
+                CollisionIgnoreComponent([attacker]),
+                # SpriteComponent(loader.load_attack_sprite(atype))
             ]
         )
