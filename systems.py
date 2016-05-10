@@ -100,6 +100,7 @@ def collision_system(new, current, entities, world, player):
             knockback = entity.components.get(CollisionKnockbackComponent.name)
             damaging = entity.components.get(CollisionDamagingComponent.name)
             transition = entity.components.get(CollisionTransitionComponent.name)
+            invuln = entity.components.get(InvulnerableComponent.name)
 
             if solid is not None:
                 can_move = False
@@ -122,13 +123,14 @@ def collision_system(new, current, entities, world, player):
 
                 mov.add_dynamic(knockback_x, knockback_y, knockback.duration)
 
-            if damaging is not None:
+            if damaging is not None and invuln is None:
                 # damage the `current` unit
                 health = current.components.get(HealthComponent.name)
                 if health is not None:
                     health.modify(-damaging.damage)
                     # todo set player state to damaged / invulnerable
-                    print("someone lost health!!")
+                    entity.components[InvulnerableComponent.name] = \
+                        InvulnerableComponent(INVULNERABLE_AFTER_DAMAGE_TIMER)
 
             if transition is not None:
                 # cause a transition to the next map
@@ -196,7 +198,7 @@ def input_system(entities, key_transitions=None, world=None, player=None, **kwar
             space = key_transitions.get(K_SPACE)
             if space == True:
                 # attack!
-                entities.append(AttackEntity(entity))
+                entities.append(PlayerAttackEntity(entity))
 
                 animation = entity.components.get(AnimatedSpriteComponent.name)
                 if animation is not None:
@@ -206,8 +208,6 @@ def input_system(entities, key_transitions=None, world=None, player=None, **kwar
                 entity.components[RootedComponent.name] = RootedComponent(PLAYER_ATTACK_ANIMATION_DURATION)
                 entity.components[UnableToAttackComponent.name] = \
                     UnableToAttackComponent(PLAYER_ATTACK_ANIMATION_DURATION)
-
-                print("Player attacked!")
 
         # implement world transitions as a number pressed down
         if world is not None:

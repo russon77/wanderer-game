@@ -51,7 +51,7 @@ def CobraEntity(initial_position):
             HealthComponent(100),
             AutomatonComponent(PERSONALITY_AGGRESSIVE),
             AttributesComponent({
-                ATTRIBUTES_AGGRO_RANGE: 200,
+                ATTRIBUTES_AGGRO_RANGE: 300,
                 ATTRIBUTES_ATTACK_RANGE: 50,
                 ATTRIBUTES_MOVE_SPEED: 0.09
             }),
@@ -61,7 +61,7 @@ def CobraEntity(initial_position):
     )
 
 
-def AttackEntity(attacker):
+def PlayerAttackEntity(attacker):
     direction = attacker.components.get(DirectionComponent.name)
     pos = attacker.components.get(BoundsComponent.name)
 
@@ -108,6 +108,6 @@ def AttackEntity(attacker):
                 CollisionKnockbackComponent(0.5, 100),
                 TimeToLiveComponent(100),
                 CollisionIgnoreComponent([attacker]),
-                # SpriteComponent(loader.load_attack_sprite(atype))
+                SpriteComponent(loader.load_attack_sprite(atype))
             ]
         )

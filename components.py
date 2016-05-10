@@ -178,6 +178,16 @@ class UnableToAttackComponent(StatusComponent):
         StatusComponent.__init__(self, ttl)
 
 
+class InvulnerableComponent(StatusComponent):
+    """
+    for entities with a health component, if this component also exists, do not allow to take damage
+    """
+    name = 'InvulnerableComponent'
+
+    def __init__(self, ttl):
+        StatusComponent.__init__(self, ttl)
+
+
 class SpriteComponent(Component):
     """
     sprite component is the base component for a single, static sprite image
